@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802538147467",
+    "project_id": "personal-money-managemen-a23ec",
+    "storage_bucket": "personal-money-managemen-a23ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802538147467:android:a90c2d0de3364663dc4e8e",
+        "android_client_info": {
+          "package_name": "com.example.money_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGosfR9erdVKxs2IhhEwlBXZHCvGIoad8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

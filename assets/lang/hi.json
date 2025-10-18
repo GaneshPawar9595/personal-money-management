@@ -1,0 +1,22 @@
+{
+  "title": "रुपया ट्रैकर",
+  "welcome_label": "वापसी पर स्वागत है",
+  "email_placeholder": "अपना ईमेल दर्ज करें",
+  "password_placeholder": "अपना पासवर्ड दर्ज करें",
+  "login_button": "लॉग इन",
+  "change_language": "भाषा बदलें",
+  "change_theme": "थीम बदलें",
+  "signup_prompt": "खाता नहीं है? साइन अप करें",
+  "create_account": "खाता बनाएँ",
+  "name_label": "नाम",
+  "name_hint": "अपना नाम दर्ज करें",
+  "phone_label": "फ़ोन नंबर",
+  "phone_hint": "फ़ोन नंबर दर्ज करें",
+  "email_label": "ईमेल",
+  "email_hint": "अपना ईमेल दर्ज करें",
+  "password_label": "पासवर्ड",
+  "password_hint": "अपना पासवर्ड दर्ज करें",
+  "signup_button": "साइन अप करें",
+  "already_account": "क्या आपका खाता है? लॉगिन करें",
+  "heading_total_balance": "कुल शेष"
+}

@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "personal-money-managemen-a23ec",
+          "appId": "1:802538147467:android:a90c2d0de3364663dc4e8e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "personal-money-managemen-a23ec",
+          "configurations": {
+            "android": "1:802538147467:android:a90c2d0de3364663dc4e8e",
+            "ios": "1:802538147467:ios:5f6e06e77e1c67c4dc4e8e",
+            "macos": "1:802538147467:ios:5f6e06e77e1c67c4dc4e8e",
+            "web": "1:802538147467:web:a63287295b0932b7dc4e8e",
+            "windows": "1:802538147467:web:3a0d851953d5ff09dc4e8e"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
