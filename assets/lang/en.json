@@ -1,5 +1,5 @@
 {
-  "title": "Rupee Tracker",
+  "title": "Money Management App",
   "welcome_label": "Welcome Back",
   "email_placeholder": "Enter your email",
   "password_placeholder": "Enter your password",
@@ -18,5 +18,12 @@
   "password_hint": "Enter your password",
   "signup_button": "S I G N  U P",
   "already_account": "Already have an account? Login",
-  "heading_total_balance": "T O T A L  B A L A N C E"
+  "heading_total_balance": "T O T A L  B A L A N C E",
+  "ERR_nameRequired" : "Name is required",
+  "ERR_nameInvalid" : "Enter a valid name",
+  "ERR_phoneRequired" : "Phone number is required",
+  "ERR_phoneInvalid" : "Enter a valid 10-digit number",
+  "ERR_emailRequired" : "Email is required",
+  "ERR_invalidEmail" : "The email address is not valid. Please check and try again.",
+  "ERR_passwordTooShort" : "Password must be at least 6 characters"
 }

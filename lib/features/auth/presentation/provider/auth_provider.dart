@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import '../../domain/usecases/sign_up_usecase.dart';
+import '../../domain/usecases/sign_in_usecase.dart';
+import '../../domain/entities/user_entity.dart';
+
+/// This provider manages the authentication state for the app,
+/// handling user sign-up and sign-in processes by communicating with the domain use cases.
+/// It exposes loading and error states so the UI can react accordingly,
+/// and holds the currently authenticated user entity.
+class AuthProvider extends ChangeNotifier {
+  /// Use case handling user registration flow.
+  final SignUpUseCase signUpUseCase;
+
+  /// Use case handling user login flow.
+  final SignInUseCase signInUseCase;
+
+  /// Holds the currently authenticated user.
+  UserEntity? _user;
+  UserEntity? get user => _user;
+
+  /// Indicates if an authentication operation is in progress.
+  bool _loading = false;
+  bool get loading => _loading;
+
+  AuthProvider({required this.signUpUseCase, required this.signInUseCase});
+
+  /// Updates the loading state and informs listeners (the UI).
+  void _setLoading(bool loading) {
+    _loading = loading;
+    notifyListeners();
+  }
+
+  /// Clears the current error message and informs listeners.
+  void _clearError() {
+    notifyListeners();
+  }
+
+  /// Processes user sign-up with provided credentials.
+  ///
+  /// Shows loading indicator while ongoing,
+  /// catches errors and sets user or error messages accordingly,
+  /// and informs UI of all state changes.
+  Future<void> signUp(
+    String email,
+    String password,
+    String username,
+    String phone,
+  ) async {
+    try {
+      _setLoading(true);
+      _clearError();
+
+      // Run domain sign-up use case
+      final userEntity = await signUpUseCase.execute(
+        email,
+        password,
+        username,
+        phone,
+      );
+
+      if (userEntity != null) {
+        // Successfully signed up
+        _user = userEntity;
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Processes user sign-in with provided email and password.
+  ///
+  /// Shows a loading indicator during authentication,
+  /// catches errors from Firebase and sets appropriate error messages,
+  /// and updates the authenticated user entity if successful.
+  Future<void> signIn(String email, String password) async {
+    try {
+      _setLoading(true);
+      _clearError();
+
+      final userEntity = await signInUseCase.execute(email, password);
+
+      if (userEntity != null) {
+        _user = userEntity;
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+}

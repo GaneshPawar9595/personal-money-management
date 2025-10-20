@@ -18,5 +18,12 @@
   "password_hint": "अपना पासवर्ड दर्ज करें",
   "signup_button": "साइन अप करें",
   "already_account": "क्या आपका खाता है? लॉगिन करें",
-  "heading_total_balance": "कुल शेष"
+  "heading_total_balance": "कुल शेष",
+  "ERR_nameRequired" : "नाम आवश्यक है",
+  "ERR_nameInvalid" : "कृपया एक मान्य नाम दर्ज करें",
+  "ERR_phoneRequired" : "फोन नंबर आवश्यक है",
+  "ERR_phoneInvalid" : "कृपया 10 अंकों का मान्य नंबर दर्ज करें",
+  "ERR_emailRequired" : "ईमेल आवश्यक है",
+  "ERR_invalidEmail" : "ईमेल पता मान्य नहीं है। कृपया जांच कर पुनः प्रयास करें।",
+  "ERR_passwordTooShort" : "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए"
 }

@@ -3,19 +3,47 @@
 =======
 # money_management
 
-A new Flutter project.
+Overview
+This Flutter project is architected using clean architecture principles and feature-based modularization to ensure scalability, maintainability, and testability.
 
-## Getting Started
+## Project Structure
 
-This project is a starting point for a Flutter application.
+├── assets/                 # Static assets including localization files and animations
+│   ├── lang/               # Localization JSON files for supported languages (e.g., en.json, hi.json)
+│   ├── lottie/             # Animation assets (e.g., login_animation.json)
+├── lib/                    # Main Dart source code
+│   ├── config/             # App-wide configurations like localization and theming
+│   │   ├── localization/   # Localization setup and classes
+│   │   └── theme.dart      # App-wide theme definitions
+│   ├── core/               # Core utilities, constants, and dependency injection setup
+│   ├── features/           # Modular features with domain, data, and presentation layers
+│   │   ├── auth/           # Authentication feature with clean separation of layers
+│   │   │   ├── data/       # Data sources, repositories, and models
+│   │   │   ├── domain/     # Entities, use cases, and repository contracts
+│   │   │   ├── presentation/ # UI pages, widgets, providers
+│   │   ├── dashboard/      # Dashboard feature organized similarly
+│   ├── shared/             # Shared widgets, providers, and utilities reusable across features
+│   ├── main.dart           # App entry point
+│   └── router.dart         # Navigation routes setup
 
-A few resources to get you started if this is your first Flutter project:
+## Key Architectural Patterns
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Clean Architecture:** Distinct domain, data, and presentation layers per feature.
+- **Feature-First Organization:** Each feature encapsulates its logic and UI independently.
+- **Dependency Injection:** Centralized injection managed under `core/di`.
+- **State Management:** Scoped providers per feature and shared providers handle global state.
+- **Localization:** JSON-based translations loaded via `config/localization`.
+- **Theming:** Centralized theme management under `config/theme.dart`.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Setup and Usage
+**Install dependencies:**
+flutter pub get
 
->>>>>>> a3a64a6 (Initial commit with Firebase setup)
+**Run the app:**
+flutter run
+
+**Localization files:** update JSON files under assets/lang/ for new languages or text changes.
+
+**To add a new feature:**
+Create a new folder under features/.
+Follow the existing layer structure (data/, domain/, presentation/).

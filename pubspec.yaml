@@ -30,22 +30,31 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Firebase
-  firebase_core: ^4.2.0   # Core Firebase SDK
-  firebase_auth: ^6.1.1   # Firebase Authentication
-  firebase_database: ^12.0.3
-  provider: ^6.1.5+1    # State management
-  firebase_messaging: ^16.0.3   # Push notifications
-  # google fonts
-  google_fonts: ^6.1.0
-  #Toast message
-  fluttertoast: ^8.2.12
-  # Date Format
-  intl: ^0.19.0
+  flutter_localizations:
+    sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  # 🔹 Firebase packages
+  firebase_core: ^4.2.0       # Core Firebase functionality (needed for all Firebase services)
+  firebase_auth: ^6.1.1       # User authentication (login/signup)
+  firebase_database: ^12.0.3  # Realtime database for storing app data
+  cloud_firestore: ^6.0.3     # Cloud Firestore database (structured, scalable data storage)
+  firebase_messaging: ^16.0.3 # Push notifications
+
+  # 🔹 State management
+  provider: ^6.1.5+1          # Helps manage app state (like theme, language, login status)
+  get_it: ^8.2.0              # Dependency injection (easy access to classes throughout the app)
+
+  # 🔹 UI & Styling
+  google_fonts: ^6.1.0        # Use Google Fonts easily in your app
+  cupertino_icons: ^1.0.8     # iOS style icons for your app
+  lottie: ^3.3.1              # Display animations easily
+
+  # 🔹 Utilities
+  intl: ^0.19.0               # Format dates, numbers, and currencies
+  shared_preferences: ^2.5.3  # Store simple data locally (like login info, settings)
+
+  # 🔹 Routing
+  go_router: ^16.2.5          # Modern, recommended package for handling page navigation
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +83,7 @@ flutter:
       - assets/lang/
       - assets/icons/
       - assets/images/
+      - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
