@@ -40,6 +40,8 @@ class CustomInputField extends StatelessWidget {
   /// Tracks the current password visibility state
   final bool? obscureState;
 
+  final int? maxLines;
+
   const CustomInputField({
     super.key,
     required this.controller,
@@ -52,6 +54,7 @@ class CustomInputField extends StatelessWidget {
     this.validator,
     this.toggleObscure,
     this.obscureState,
+    this.maxLines = 1,
   });
 
   @override
@@ -63,6 +66,8 @@ class CustomInputField extends StatelessWidget {
       validator: validator, // runs validation logic when form is submitted
       cursorColor: Colors.deepPurple,
       style: const TextStyle(color: Colors.black),
+      maxLines : maxLines,
+
       decoration: InputDecoration(
         // Label above the field
         labelText: label,

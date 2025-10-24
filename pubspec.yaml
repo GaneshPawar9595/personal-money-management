@@ -48,10 +48,14 @@ dependencies:
   google_fonts: ^6.1.0        # Use Google Fonts easily in your app
   cupertino_icons: ^1.0.8     # iOS style icons for your app
   lottie: ^3.3.1              # Display animations easily
+  flutter_iconpicker: ^4.0.3
+  flutter_colorpicker: ^1.1.0
+  fl_chart: ^0.70.2
 
   # 🔹 Utilities
   intl: ^0.19.0               # Format dates, numbers, and currencies
   shared_preferences: ^2.5.3  # Store simple data locally (like login info, settings)
+  equatable: ^2.0.7
 
   # 🔹 Routing
   go_router: ^16.2.5          # Modern, recommended package for handling page navigation

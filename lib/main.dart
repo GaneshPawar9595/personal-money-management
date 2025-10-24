@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'config/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'features/category/presentation/provider/category_provider.dart';
+import 'features/transaction/presentation/provider/transaction_provider.dart';
 import 'firebase_options.dart';
 import 'router.dart';
 import '../features/auth/presentation/provider/auth_provider.dart';
@@ -40,6 +42,9 @@ void main() async {
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => GetIt.instance<AuthProvider>(),
         ),
+
+        ChangeNotifierProvider(create: (_) => locator<CategoryProvider>()),
+        ChangeNotifierProvider(create: (_) => locator<TransactionProvider>()),
       ],
       child: const MyApp(), // The main app widget
     ),

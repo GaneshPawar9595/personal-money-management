@@ -76,4 +76,11 @@ class Validators {
     // If no problems found, return null (means valid)
     return null;
   }
+
+  static String? validateCategoryName(String? value, String errorMessage){
+    if (value == null || value.trim().isEmpty) {
+      return errorMessage;
+    }
+    return null;
+  }
 }
