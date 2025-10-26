@@ -8,7 +8,8 @@ import 'features/auth/presentation/pages/signup/signup_page.dart';
 import 'features/auth/presentation/pages/signin/signin_page.dart';
 import 'features/auth/presentation/provider/auth_provider.dart';
 import 'features/category/presentation/pages/category_page.dart';
-import 'features/dashboard/presentation/pages/dashboard_page.dart'; // Dashboard/Home page
+import 'features/dashboard/presentation/pages/dashboard_page.dart';
+import 'features/profile/presentation/pages/profile_page.dart'; // Dashboard/Home page
 
 // Create a router object which handles page navigation in the app
 final GoRouter router = GoRouter(
@@ -54,6 +55,13 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final userId = context.read<AuthProvider>().user?.id;
         return TransactionPage(userId: userId!);
+      }, // Widget to display
+    ),
+
+    GoRoute(
+      path: '/profile', // URL/path for this page
+      builder: (context, state) {
+        return ProfilePage();
       }, // Widget to display
     ),
   ],

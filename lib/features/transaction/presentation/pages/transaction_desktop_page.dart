@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/entities/transaction_entity.dart';
@@ -79,10 +80,39 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
     });
   }
 
+  /// Builds top app bar with title and user info
+  Widget _buildTopBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Dashboard Title
+          Text(
+            'Transaction',
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
       body: Consumer<TransactionProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const Center(child: CircularProgressIndicator());
@@ -95,48 +125,55 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
             _showOnlyExpense,
           );
 
-          return Row(
+          return Column(
             children: [
-              Flexible(
-                flex: 3,
-                child: Column(
+              _buildTopBar(),
+              Expanded(
+                child: Row(
                   children: [
-                    TransactionSearchFilterBar(
-                      controller: _searchController,
-                      showOnlyIncome: _showOnlyIncome,
-                      showOnlyExpense: _showOnlyExpense,
-                      onSearchChanged: (val) => setState(() => _searchQuery = val),
-                      onFilterSelected: _onFilterSelected,
-                    ),
-                    Expanded(
-                      child: TransactionList(
-                        transactions: filteredTransactions,
-                        onTap: (transaction) => setState(() => _selectedTransaction = transaction),
-                        onLongPress: _confirmDelete,
-                        selectedTransaction: _selectedTransaction,
+                    Flexible(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          TransactionSearchFilterBar(
+                            controller: _searchController,
+                            showOnlyIncome: _showOnlyIncome,
+                            showOnlyExpense: _showOnlyExpense,
+                            onSearchChanged: (val) => setState(() => _searchQuery = val),
+                            onFilterSelected: _onFilterSelected,
+                          ),
+                          Expanded(
+                            child: TransactionList(
+                              transactions: filteredTransactions,
+                              onTap: (transaction) => setState(() => _selectedTransaction = transaction),
+                              onLongPress: _confirmDelete,
+                              selectedTransaction: _selectedTransaction,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton.icon(
+                              onPressed: _clearSelectedTransaction,
+                              icon: const Icon(Icons.clear),
+                              label: const Text('Clear Selection'),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton.icon(
-                        onPressed: _clearSelectedTransaction,
-                        icon: const Icon(Icons.clear),
-                        label: const Text('Clear Selection'),
+                    const VerticalDivider(width: 1),
+                    Flexible(
+                      flex: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TransactionForm(
+                          userId: widget.userId,
+                          closeOnSubmit: false,
+                          existingTransaction: _selectedTransaction,
+                        ),
                       ),
                     ),
                   ],
-                ),
-              ),
-              const VerticalDivider(width: 1),
-              Flexible(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: TransactionForm(
-                    userId: widget.userId,
-                    closeOnSubmit: false,
-                    existingTransaction: _selectedTransaction,
-                  ),
                 ),
               ),
             ],

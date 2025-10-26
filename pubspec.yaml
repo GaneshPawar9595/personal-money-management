@@ -51,6 +51,7 @@ dependencies:
   flutter_iconpicker: ^4.0.3
   flutter_colorpicker: ^1.1.0
   fl_chart: ^0.70.2
+  image_picker: ^1.2.0
 
   # 🔹 Utilities
   intl: ^0.19.0               # Format dates, numbers, and currencies

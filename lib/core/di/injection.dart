@@ -1,13 +1,19 @@
 // Import GetIt package, which helps manage and provide dependencies throughout the app
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
+import 'package:money_management/features/dashboard/presentation/provider/dashboard_provider.dart';
 
 // Import various files related to authentication features
 import '../../features/auth/data/datasources/auth_remote_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/usecases/get_profile_usecase.dart';
+import '../../features/auth/domain/usecases/observe_auth_state_usecase.dart';
 import '../../features/auth/domain/usecases/sign_in_usecase.dart';
+import '../../features/auth/domain/usecases/sign_out_usecase.dart';
 import '../../features/auth/domain/usecases/sign_up_usecase.dart';
+import '../../features/auth/domain/usecases/update_avatar_usecase.dart';
+import '../../features/auth/domain/usecases/update_profile_usecase.dart';
 import '../../features/auth/presentation/provider/auth_provider.dart';
 
 // For category
@@ -21,6 +27,9 @@ import '../../features/category/domain/usecases/delete_category_usecase.dart';
 import '../../features/category/domain/usecases/get_categories_usecase.dart';
 import '../../features/category/domain/usecases/update_category_usecase.dart';
 import '../../features/category/presentation/provider/category_provider.dart';
+import '../../features/dashboard/domain/usecases/calculate_category_summary_usecase.dart';
+import '../../features/dashboard/domain/usecases/calculate_spending_trends_usecase.dart';
+import '../../features/dashboard/domain/usecases/get_recent_transactions_usecase.dart';
 import '../../features/transaction/data/datasources/transaction_remote_datasource.dart';
 import '../../features/transaction/data/datasources/transaction_remote_datasource_imp.dart';
 import '../../features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -52,11 +61,23 @@ void setupLocator() {
   // Register the use case for user sign-in that also depends on the repository
   locator.registerLazySingleton<SignInUseCase>(() => SignInUseCase(locator()));
 
+  locator.registerLazySingleton<SignOutUsecase>(() => SignOutUsecase(locator()));
+
+  locator.registerLazySingleton<UpdateAvatarUsecase>(() => UpdateAvatarUsecase(locator()));
+  locator.registerLazySingleton<UpdateProfileUsecase>(() => UpdateProfileUsecase(locator()));
+  locator.registerLazySingleton<ObserveAuthStateUsecase>(() => ObserveAuthStateUsecase(locator()));
+  locator.registerLazySingleton<GetProfileUsecase>(() => GetProfileUsecase(locator()));
+
   // Register the AuthProvider which provides state management for authentication in the UI;
   // this one creates a fresh instance every time it's requested
   locator.registerFactory<AuthProvider>(() => AuthProvider(
     signUpUseCase: locator(),
     signInUseCase: locator(),
+    signOutUsecase: locator(),
+    updateAvatarUsecase: locator(),
+    updateProfileUsecase: locator(),
+    observeAuthState: locator(),
+    getProfileUsecase: locator(),
   ));
 
   // Category registrations
@@ -102,4 +123,15 @@ void setupLocator() {
     updateTransactionUseCase: locator(),
     deleteTransactionUseCase: locator(),
   ));
+
+  // Register Dashboard
+  locator.registerLazySingleton<DashboardProvider>(() => DashboardProvider(
+    categorySummaryUseCase: locator(),
+    recentTransactionsUseCase: locator(),
+    spendingTrendsUseCase: locator(),
+  ));
+
+  locator.registerLazySingleton(() => CalculateCategorySummaryUseCase());
+  locator.registerLazySingleton(() => CalculateSpendingTrendsUseCase());
+  locator.registerLazySingleton(() => GetRecentTransactionsUseCase());
 }

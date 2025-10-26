@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../provider/category_provider.dart';
 import '../../domain/entities/category_entity.dart';
@@ -118,6 +119,36 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
     });
   }
 
+  /// Builds top app bar with title and user info
+  Widget _buildTopBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha:0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Dashboard Title
+          Text(
+            'Categories',
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Needed for AutomaticKeepAliveClientMixin
@@ -127,7 +158,6 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
       If your dashboard uses NavigationRail, integrate this page as a body or nested page.
       The NavigationRail manages navigation selection and actions. This page manages content.
       */
-      appBar: AppBar(title: const Text('Categories')),
       body: Consumer<CategoryProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
@@ -150,66 +180,73 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
             );
           }
 
-          return Row(
-            // LEFT PANEL — Category list with search
+          return Column(
             children: [
-              Flexible(
-                flex: 3,
-                child: Column(
+              _buildTopBar(),
+              Expanded(
+                child: Row(
+                  // LEFT PANEL — Category list with search
                   children: [
-                    // Search bar
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search categories...',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    Flexible(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          // Search bar
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                hintText: 'Search categories...',
+                                prefixIcon: const Icon(Icons.search),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon:
+                                    _searchTerm.isNotEmpty
+                                        ? IconButton(
+                                          icon: const Icon(Icons.clear),
+                                          onPressed: () => _searchController.clear(),
+                                        )
+                                        : null,
+                              ),
+                            ),
                           ),
-                          suffixIcon:
-                              _searchTerm.isNotEmpty
-                                  ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () => _searchController.clear(),
-                                  )
-                                  : null,
-                        ),
+                          // Category list with callbacks
+                          Expanded(
+                            child: CategoryList(
+                              categories: filteredCategories,
+                              onTap: (category) {
+                                setState(() {
+                                  _selectedCategory = category;
+                                });
+                              },
+                              onLongPress: _confirmDelete,
+                              selectedCategory: _selectedCategory,
+                            ),
+                          ),
+                          // Clear selection button
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton.icon(
+                              onPressed: _clearSelectedCategory,
+                              icon: const Icon(Icons.clear),
+                              label: const Text('Clear Selection'),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // Category list with callbacks
-                    Expanded(
-                      child: CategoryList(
-                        categories: filteredCategories,
-                        onTap: (category) {
-                          setState(() {
-                            _selectedCategory = category;
-                          });
-                        },
-                        onLongPress: _confirmDelete,
-                        selectedCategory: _selectedCategory,
-                      ),
-                    ),
-                    // Clear selection button
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton.icon(
-                        onPressed: _clearSelectedCategory,
-                        icon: const Icon(Icons.clear),
-                        label: const Text('Clear Selection'),
+                    const VerticalDivider(width: 1),
+                    Flexible(
+                      flex: 3,
+                      child: CategoryForm(
+                        userId: widget.userId,
+                        existingCategory: _selectedCategory,
+                        closeOnSubmit: false,
                       ),
                     ),
                   ],
-                ),
-              ),
-              const VerticalDivider(width: 1),
-              Flexible(
-                flex: 4,
-                child: CategoryForm(
-                  userId: widget.userId,
-                  existingCategory: _selectedCategory,
-                  closeOnSubmit: false,
                 ),
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/entities/transaction_entity.dart';
@@ -71,6 +72,12 @@ class _TransactionMobilePageState extends State<TransactionMobilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pop(); // or Navigator.pop(context);
+          },
+        ),
         title: const Text('Transaction'),
       ),
         body: Consumer<TransactionProvider>(

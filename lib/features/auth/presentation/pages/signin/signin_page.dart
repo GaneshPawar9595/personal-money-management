@@ -49,6 +49,7 @@ class _SignInPageState extends State<SignInPage> {
   /// - Navigates to the dashboard if successful
   /// - Shows an error message if something goes wrong
   Future<void> _handleSignIn() async {
+
     // Validate all form fields (returns false if any are invalid)
     if (_formKey.currentState!.validate() == false) {
       return;

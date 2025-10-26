@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 class UserEntity {
   /// Unique identifier of the user
   final String id;
@@ -36,6 +39,19 @@ class UserEntity {
     this.loginAt,
   });
 
-/// You can add helper methods here if needed, for example, to display formatted dates,
-/// or to copy with modifications (copyWith), but keep entity logic minimal.
+  /// If a profile picture is stored as Base64 text, this tries to turn it into real image bytes.
+  /// - If it works, you get bytes that can be shown as a picture.
+  /// - If it fails or there’s no image, it returns nothing. [web:100][web:104]
+  Uint8List? get profileImageBytes {
+    if (profileImage != null && profileImage!.isNotEmpty) {
+      try {
+        return base64Decode(profileImage!); // Tries to decode the picture text into image data. [web:100][web:104]
+      } catch (_) {
+        // If the text isn’t a valid Base64 image, just don’t return anything to avoid app errors. [web:101][web:104]
+        return null;
+      }
+    }
+    // No picture provided. [web:101][web:104]
+    return null;
+  }
 }

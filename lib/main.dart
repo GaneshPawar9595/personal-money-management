@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:money_management/features/dashboard/presentation/provider/dashboard_provider.dart';
 import 'package:money_management/shared/provider/locale_provider.dart';
 import 'package:money_management/shared/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,7 @@ void main() async {
 
         ChangeNotifierProvider(create: (_) => locator<CategoryProvider>()),
         ChangeNotifierProvider(create: (_) => locator<TransactionProvider>()),
+        ChangeNotifierProvider(create: (_) => locator<DashboardProvider>()),
       ],
       child: const MyApp(), // The main app widget
     ),

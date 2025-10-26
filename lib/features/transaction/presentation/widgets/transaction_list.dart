@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:money_management/features/transaction/domain/entities/transaction_entity.dart';
 
 typedef TransactionTapCallback = void Function(TransactionEntity transaction);
-typedef TransactionLongPressCallback = void Function(TransactionEntity transaction);
+typedef TransactionLongPressCallback =
+    void Function(TransactionEntity transaction);
 
 class TransactionList extends StatelessWidget {
   final List<TransactionEntity> transactions;
@@ -12,6 +13,7 @@ class TransactionList extends StatelessWidget {
   final TransactionLongPressCallback onLongPress;
   final TransactionEntity? selectedTransaction;
   final bool showHeaders;
+  final ScrollPhysics? scrollPhysics; // ✅ Add parameter
 
   const TransactionList({
     super.key,
@@ -20,10 +22,13 @@ class TransactionList extends StatelessWidget {
     required this.onLongPress,
     this.selectedTransaction,
     this.showHeaders = true,
+    this.scrollPhysics, // ✅ optional
   });
 
   /// Groups and sorts transactions by date
-  List<Map<String, dynamic>> groupTransactionsByDate(List<TransactionEntity> transactions) {
+  List<Map<String, dynamic>> groupTransactionsByDate(
+    List<TransactionEntity> transactions,
+  ) {
     // Sort newest first
     transactions.sort((a, b) => b.date.compareTo(a.date));
 
@@ -46,7 +51,11 @@ class TransactionList extends StatelessWidget {
   String getDisplayDate(DateTime transactionDate) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final transDate = DateTime(transactionDate.year, transactionDate.month, transactionDate.day);
+    final transDate = DateTime(
+      transactionDate.year,
+      transactionDate.month,
+      transactionDate.day,
+    );
     final daysDifference = today.difference(transDate).inDays;
 
     if (daysDifference == 0) return "Today";
@@ -70,14 +79,17 @@ class TransactionList extends StatelessWidget {
 
     return ListView.builder(
       itemCount: groupedTransactions.length,
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: scrollPhysics ?? const AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final item = groupedTransactions[index];
 
-        if (item["type"] == "header" ) {
+        if (item["type"] == "header") {
           if (!showHeaders) return const SizedBox.shrink();
           // Date header
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Text(
               item["date"],
               style: GoogleFonts.poppins(
@@ -93,17 +105,24 @@ class TransactionList extends StatelessWidget {
         final isSelected = selectedTransaction?.id == transaction.id;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: isSelected
-                  ? BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
-                  : BorderSide.none,
+              side:
+                  isSelected
+                      ? BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      )
+                      : BorderSide.none,
             ),
             elevation: isSelected ? 6 : 3,
             child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
+              ),
               leading: Icon(
                 transaction.categoryEntity.iconData,
                 color: transaction.categoryEntity.color,
@@ -115,16 +134,17 @@ class TransactionList extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              subtitle: transaction.note.isNotEmpty
-                  ? Text(
-                transaction.note,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade600,
-                ),
-              )
-                  : null,
+              subtitle:
+                  transaction.note.isNotEmpty
+                      ? Text(
+                        transaction.note,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade600,
+                        ),
+                      )
+                      : null,
               trailing: Text(
                 "₹ ${transaction.amount.toStringAsFixed(2)}",
                 style: GoogleFonts.poppins(
