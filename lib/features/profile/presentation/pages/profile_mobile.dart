@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../../config/localization/app_localizations.dart';
 import '../../../../shared/provider/locale_provider.dart';
 import '../../../../shared/provider/theme_provider.dart';
 import '../../../auth/presentation/provider/auth_provider.dart';
@@ -248,7 +247,7 @@ class _ProfileMobilePageState extends State<ProfileMobilePage> {
                               children: [
                                 Text(
                                   _nameCtrl.text.isEmpty
-                                      ? (user.name ?? 'User')
+                                      ? (user.name)
                                       : _nameCtrl.text,
                                   style: Theme.of(context).textTheme.titleMedium
                                       ?.copyWith(fontWeight: FontWeight.w600),
@@ -256,7 +255,7 @@ class _ProfileMobilePageState extends State<ProfileMobilePage> {
                                 const SizedBox(height: 4),
                                 Text(
                                   _emailCtrl.text.isEmpty
-                                      ? (user.email ?? '')
+                                      ? (user.email)
                                       : _emailCtrl.text,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
