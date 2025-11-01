@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../../domain/entities/category_entity.dart';
 
 typedef CategoryTapCallback = void Function(CategoryEntity category);
@@ -27,9 +28,10 @@ class CategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     if (categories.isEmpty) {
       // Show placeholder text when there are no categories
-      return Center(child: Text('No categories found'));
+      return Center(child: Text(loc!.translate('no_categories_found')));
     }
 
     return ListView.builder(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../provider/category_provider.dart';
 import '../../domain/entities/category_entity.dart';
+import '../utils/category_utils.dart';
 import '../widgets/category_form.dart';
 import '../widgets/category_list.dart';
 
@@ -15,10 +17,10 @@ import '../widgets/category_list.dart';
 class CategoryDesktopPage extends StatefulWidget {
   final String userId;
 
-  const CategoryDesktopPage({Key? key, required this.userId}) : super(key: key);
+  const CategoryDesktopPage({super.key, required this.userId});
 
   @override
-  _CategoryDesktopPageState createState() => _CategoryDesktopPageState();
+  State<CategoryDesktopPage> createState() => _CategoryDesktopPageState();
 }
 
 class _CategoryDesktopPageState extends State<CategoryDesktopPage>
@@ -68,50 +70,6 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
         .toList();
   }
 
-  /// Opens a confirmation dialog when the user tries to delete a category.
-  /// On confirmation, it removes the category from the database and updates state.
-  void _confirmDelete(CategoryEntity category) async {
-    final bool? confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: Text('Delete Category'),
-            content: Text(
-              'Are you sure you want to delete "${category.name}"?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Delete'),
-              ),
-            ],
-          ),
-    );
-
-    // Proceed only if user confirmed delete action
-    if (confirmed == true) {
-      final provider = Provider.of<CategoryProvider>(context, listen: false);
-      await provider.deleteCategory(widget.userId, category.id);
-      if (provider.error != null) {
-        // Show pop-up message for deletion failure
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to delete category: ${provider.error}'),
-          ),
-        );
-      } else {
-        // If the deleted item was selected, clear the form on the right panel
-        if (_selectedCategory?.id == category.id) {
-          _clearSelectedCategory();
-        }
-      }
-    }
-  }
-
   /// Clears the selected category to show an empty “Add Category” form on the right.
   void _clearSelectedCategory() {
     setState(() {
@@ -121,13 +79,14 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
 
   /// Builds top app bar with title and user info
   Widget _buildTopBar() {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -137,7 +96,7 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
         children: [
           // Dashboard Title
           Text(
-            'Categories',
+            loc!.translate('categories_title'),
             style: GoogleFonts.poppins(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -152,6 +111,7 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Needed for AutomaticKeepAliveClientMixin
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       // Consider embedding this page into a desktop layout with NavigationRail
       /*
@@ -173,7 +133,7 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
           if (filteredCategories.isEmpty) {
             return Center(
               child: Text(
-                'No categories found.\nUse the form on the right to create one.',
+                loc!.translate('no_categories_found'),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
@@ -197,7 +157,9 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
                             child: TextField(
                               controller: _searchController,
                               decoration: InputDecoration(
-                                hintText: 'Search categories...',
+                                hintText: loc!.translate(
+                                  'category_search_hint',
+                                ),
                                 prefixIcon: const Icon(Icons.search),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -206,7 +168,8 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
                                     _searchTerm.isNotEmpty
                                         ? IconButton(
                                           icon: const Icon(Icons.clear),
-                                          onPressed: () => _searchController.clear(),
+                                          onPressed:
+                                              () => _searchController.clear(),
                                         )
                                         : null,
                               ),
@@ -221,7 +184,12 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
                                   _selectedCategory = category;
                                 });
                               },
-                              onLongPress: _confirmDelete,
+                              onLongPress:
+                                  (category) => confirmDeleteCategory(
+                                    context,
+                                    widget.userId,
+                                    category,
+                                  ),
                               selectedCategory: _selectedCategory,
                             ),
                           ),
@@ -231,7 +199,9 @@ class _CategoryDesktopPageState extends State<CategoryDesktopPage>
                             child: ElevatedButton.icon(
                               onPressed: _clearSelectedCategory,
                               icon: const Icon(Icons.clear),
-                              label: const Text('Clear Selection'),
+                              label: Text(
+                                loc.translate('clear_selection_label'),
+                              ),
                             ),
                           ),
                         ],

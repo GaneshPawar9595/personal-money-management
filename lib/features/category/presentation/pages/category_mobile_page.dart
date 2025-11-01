@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../provider/category_provider.dart';
 import '../../domain/entities/category_entity.dart';
+import '../utils/category_utils.dart';
 import '../widgets/category_list.dart';
 import '../widgets/category_form_wrapper.dart';
 
@@ -21,7 +23,7 @@ class CategoryMobilePage extends StatefulWidget {
   const CategoryMobilePage({super.key, required this.userId});
 
   @override
-  _CategoryMobilePageState createState() => _CategoryMobilePageState();
+  State<CategoryMobilePage> createState() => _CategoryMobilePageState();
 }
 
 class _CategoryMobilePageState extends State<CategoryMobilePage> {
@@ -62,46 +64,12 @@ class _CategoryMobilePageState extends State<CategoryMobilePage> {
         .toList();
   }
 
-  /// Prompts the user to confirm deletion, updates provider,
-  /// and shows success or failure messages accordingly.
-  Future<void> _confirmDelete(CategoryEntity category) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Category'),
-        content: Text('Are you sure you want to delete "${category.name}"?'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Delete')),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      final provider = Provider.of<CategoryProvider>(context, listen: false);
-      await provider.deleteCategory(widget.userId, category.id);
-
-      if (provider.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete category: ${provider.error}')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Category deleted successfully')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title:  Text(loc!.translate('categories_title')),
         bottom: PreferredSize(
           // Search bar section inside the AppBar
           preferredSize: const Size.fromHeight(56),
@@ -110,7 +78,7 @@ class _CategoryMobilePageState extends State<CategoryMobilePage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search categories...',
+                hintText: loc.translate('category_search_hint'),
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 suffixIcon: _searchTerm.isNotEmpty
@@ -140,8 +108,8 @@ class _CategoryMobilePageState extends State<CategoryMobilePage> {
 
           // Inform user when no categories exist
           if (filtered.isEmpty) {
-            return const Center(
-              child: Text('No categories found. Tap the + button to add a new one.'),
+            return Center(
+              child: Text(loc.translate('no_categories_found')),
             );
           }
 
@@ -149,13 +117,13 @@ class _CategoryMobilePageState extends State<CategoryMobilePage> {
           return CategoryList(
             categories: filtered,
             onTap: (category) => showCategoryForm(context, widget.userId, category),
-            onLongPress: _confirmDelete,
+            onLongPress: (category) => confirmDeleteCategory(context, widget.userId, category),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showCategoryForm(context, widget.userId, null),
-        tooltip: 'Add Category',
+        tooltip: loc.translate('add_category_tooltip'),
         child: const Icon(Icons.add),
       ),
     );

@@ -3,11 +3,12 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:money_management/shared/widgets/custom_input_field.dart';
+import '../../../../config/localization/app_localizations.dart';
+import 'color_picker_field.dart';
 import '../../domain/entities/category_entity.dart';
 import '../provider/category_provider.dart';
 import '../../../../core/utils/validation.dart';
-import 'package:money_management/shared/widgets/custom_input_field.dart';
-import 'color_picker_field.dart';
 
 /// Form for adding or editing a category.
 ///
@@ -29,7 +30,7 @@ class CategoryForm extends StatefulWidget {
   });
 
   @override
-  _CategoryFormState createState() => _CategoryFormState();
+  State<CategoryForm> createState() => _CategoryFormState();
 }
 
 class _CategoryFormState extends State<CategoryForm> {
@@ -126,6 +127,7 @@ class _CategoryFormState extends State<CategoryForm> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
+    final loc = AppLocalizations.of(context);
     final provider = Provider.of<CategoryProvider>(context, listen: false);
 
     final category = CategoryEntity(
@@ -151,15 +153,19 @@ class _CategoryFormState extends State<CategoryForm> {
       if (provider.error == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.existingCategory == null
-                ? 'Category added successfully'
-                : 'Category updated successfully'),
+            content: Text(
+              widget.existingCategory == null
+                  ? loc!.translate('category_added_success')
+                  : loc!.translate('category_updated_success'),
+            ),
             backgroundColor: Colors.green,
           ),
         );
 
         if (widget.closeOnSubmit ?? true) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => Navigator.pop(context),
+          );
         }
       } else {
         _showError(provider.error!);
@@ -188,6 +194,7 @@ class _CategoryFormState extends State<CategoryForm> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(32),
       height: 475,
@@ -197,7 +204,11 @@ class _CategoryFormState extends State<CategoryForm> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              widget.existingCategory == null ? 'Add Category' : 'Edit Category',
+              widget.existingCategory == null
+                  ? loc!.translate('add_categories_title') // e.g. 'Add Category'
+                  : loc!.translate(
+                    'edit_category_title',
+                  ), // e.g. 'Edit Category'
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
@@ -219,7 +230,7 @@ class _CategoryFormState extends State<CategoryForm> {
                 ElevatedButton.icon(
                   onPressed: _isSubmitting ? null : _pickIcon,
                   icon: const Icon(Icons.edit),
-                  label: const Text('Select Icon'),
+                  label: Text(loc.translate('select_icon')),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple.shade50,
                     foregroundColor: Colors.deepPurple,
@@ -233,13 +244,14 @@ class _CategoryFormState extends State<CategoryForm> {
             // Category name input field
             CustomInputField(
               controller: _nameController,
-              hintText: 'Category Name',
-              label: 'Category Name',
+              hintText: loc.translate('category_name_hint'),
+              label: loc.translate('category_name_label'),
               icon: Icons.category,
-              validator: (value) => Validators.validateCategoryName(
-                value,
-                "Please enter a category name",
-              ),
+              validator:
+                  (value) => Validators.validateCategoryName(
+                    value,
+                    loc.translate('category_name_error'),
+                  ),
             ),
 
             const SizedBox(height: 20),
@@ -247,10 +259,11 @@ class _CategoryFormState extends State<CategoryForm> {
             // Color picker field to choose display color
             ColorPickerField(
               initialHexColor: _colorCodeController.text,
-              label: 'Color Code',
-              errorText: _colorCodeController.text.isEmpty
-                  ? 'Please select a color'
-                  : null,
+              label: loc.translate('color_code_label'),
+              errorText:
+                  _colorCodeController.text.isEmpty
+                      ? loc.translate('color_error')
+                      : null,
               onColorChanged: (hex) {
                 setState(() => _colorCodeController.text = hex);
               },
@@ -261,13 +274,14 @@ class _CategoryFormState extends State<CategoryForm> {
             // Optional message field
             CustomInputField(
               controller: _messageController,
-              hintText: 'Message',
-              label: 'Message',
+              hintText: loc.translate('category_message_hint'),
+              label: loc.translate('category_message_label'),
               icon: Icons.message,
-              validator: (value) => Validators.validateCategoryName(
-                value,
-                "Please enter a message",
-              ),
+              validator:
+                  (value) => Validators.validateCategoryName(
+                    value,
+                    loc.translate('category_message_error'),
+                  ),
               maxLines: 3,
               keyboardType: TextInputType.multiline,
             ),
@@ -280,13 +294,14 @@ class _CategoryFormState extends State<CategoryForm> {
               children: [
                 ElevatedButton(
                   onPressed: _isSubmitting ? null : _submit,
-                  child: _isSubmitting
-                      ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                      : const Text('Submit'),
+                  child:
+                      _isSubmitting
+                          ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : Text(loc.translate('submit_button')),
                 ),
                 const SizedBox(width: 20),
                 ElevatedButton(
@@ -294,7 +309,7 @@ class _CategoryFormState extends State<CategoryForm> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey.shade400,
                   ),
-                  child: const Text('Clear'),
+                  child: Text(loc.translate('clear_button')),
                 ),
               ],
             ),

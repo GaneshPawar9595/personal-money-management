@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../../domain/entities/category_entity.dart';
 import '../provider/category_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class CategorySelector extends StatefulWidget {
   });
 
   @override
-  _CategorySelectorState createState() => _CategorySelectorState();
+  State<CategorySelector> createState() => _CategorySelectorState();
 }
 
 class _CategorySelectorState extends State<CategorySelector> {
@@ -38,6 +39,8 @@ class _CategorySelectorState extends State<CategorySelector> {
   }
 
   void _openCategoryModal() {
+    final loc = AppLocalizations.of(context);
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -48,7 +51,7 @@ class _CategorySelectorState extends State<CategorySelector> {
           builder: (context, setModalState) {
             final allCategories = context.read<CategoryProvider>().categories;
 
-            void _onSearchChanged(String query) {
+            void onSearchChanged(String query) {
               setModalState(() {
                 filteredCategories = query.isEmpty
                     ? allCategories
@@ -65,19 +68,19 @@ class _CategorySelectorState extends State<CategorySelector> {
                 children: [
                   TextField(
                     controller: _searchController,
-                    decoration: const InputDecoration(
-                      labelText: "Search Category",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: loc!.translate('category_search_hint'),
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
-                    onChanged: _onSearchChanged,
+                    onChanged: onSearchChanged,
                   ),
                   const SizedBox(height: 10),
                   Flexible(
                     child: filteredCategories.isEmpty
-                        ? const Center(child: Text('No categories found'))
+                        ? Center(child: Text(loc.translate('no_categories_found')))
                         : ListView.builder(
                       shrinkWrap: true,
                       itemCount: filteredCategories.length,
@@ -105,7 +108,9 @@ class _CategorySelectorState extends State<CategorySelector> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final selected = widget.selectedCategory;
+
     return GestureDetector(
       onTap: _openCategoryModal,
       child: Container(
@@ -126,7 +131,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                   const Icon(Icons.category, color: Colors.grey),
                 const SizedBox(width: 10),
                 Text(
-                  selected?.name ?? "Select Category",
+                  selected?.name ?? loc!.translate('select_icon'),
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
               ],

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../provider/category_provider.dart';
 import '../../domain/entities/category_entity.dart';
+import '../utils/category_utils.dart';
 import '../widgets/category_form.dart';
 import '../widgets/category_list.dart';
 
@@ -11,7 +14,7 @@ class CategoryTabletPage extends StatefulWidget {
   const CategoryTabletPage({super.key, required this.userId});
 
   @override
-  _CategoryTabletPageState createState() => _CategoryTabletPageState();
+  State<CategoryTabletPage> createState() => _CategoryTabletPageState();
 }
 
 class _CategoryTabletPageState extends State<CategoryTabletPage>  with AutomaticKeepAliveClientMixin<CategoryTabletPage> {
@@ -19,13 +22,15 @@ class _CategoryTabletPageState extends State<CategoryTabletPage>  with Automatic
   String _searchTerm = '';
   CategoryEntity? _selectedCategory;
 
+  // Keeps page state active when switching tabs (desktop-friendly behavior)
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    // Load categories when page initializes
+
+    // Load categories when the page opens for the first time
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<CategoryProvider>(context, listen: false);
       if (provider.categories.isEmpty) {
@@ -33,9 +38,10 @@ class _CategoryTabletPageState extends State<CategoryTabletPage>  with Automatic
       }
     });
 
-    // Listen to text changes for search filtering
+    // Listen for text updates in the search bar
     _searchController.addListener(() {
       setState(() {
+        // Convert typed text to lowercase for easy matching
         _searchTerm = _searchController.text.trim().toLowerCase();
       });
     });
@@ -43,63 +49,68 @@ class _CategoryTabletPageState extends State<CategoryTabletPage>  with Automatic
 
   @override
   void dispose() {
+    // Clean up resource to avoid memory leaks
     _searchController.dispose();
     super.dispose();
   }
 
-  /// Returns list of categories filtered by search term (case insensitive)
+  /// Filters categories by the term user types in the search field.
+  /// Returns full list if nothing is typed.
   List<CategoryEntity> _filterCategories(List<CategoryEntity> categories) {
     if (_searchTerm.isEmpty) return categories;
-    return categories.where((c) => c.name.toLowerCase().contains(_searchTerm)).toList();
+    return categories
+        .where((c) => c.name.toLowerCase().contains(_searchTerm))
+        .toList();
   }
 
-  /// Shows confirmation dialog and deletes a category if confirmed
-  void _confirmDelete(CategoryEntity category) async {
-    final bool? confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Delete Category'),
-        content: Text('Are you sure you want to delete "${category.name}"?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      final provider = Provider.of<CategoryProvider>(context, listen: false);
-      await provider.deleteCategory(widget.userId, category.id);
-      if (provider.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete category: ${provider.error}')),
-        );
-      } else {
-        // Clear selection if deleted category was selected
-        if (_selectedCategory?.id == category.id) {
-          _clearSelectedCategory();
-        }
-      }
-    }
-  }
-
-  /// Clears the currently selected category to show empty Add form
+  /// Clears the selected category to show an empty “Add Category” form on the right.
   void _clearSelectedCategory() {
     setState(() {
       _selectedCategory = null;
     });
   }
 
+  /// Builds top app bar with title and user info
+  Widget _buildTopBar() {
+    final loc = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Dashboard Title
+          Text(
+            loc!.translate('categories_title'),
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Needed for AutomaticKeepAliveClientMixin
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       // Consider embedding this page into a desktop layout with NavigationRail
       /*
       If your dashboard uses NavigationRail, integrate this page as a body or nested page.
       The NavigationRail manages navigation selection and actions. This page manages content.
       */
-      appBar: AppBar(title: const Text('Categories')),
       body: Consumer<CategoryProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
@@ -111,61 +122,93 @@ class _CategoryTabletPageState extends State<CategoryTabletPage>  with Automatic
 
           final filteredCategories = _filterCategories(provider.categories);
 
-          return Row(
+          // If there are no categories, show an empty state message
+          if (filteredCategories.isEmpty) {
+            return Center(
+              child: Text(loc!.translate('no_categories_found'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          }
+
+          return Column(
             children: [
-              Flexible(
-                flex: 3,
-                child: Column(
+              _buildTopBar(),
+              Expanded(
+                child: Row(
+                  // LEFT PANEL — Category list with search
                   children: [
-                    // Search bar
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search categories...',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          suffixIcon: _searchTerm.isNotEmpty
-                              ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () => _searchController.clear(),
-                          )
-                              : null,
-                        ),
+                    Flexible(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          // Search bar
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                hintText: loc!.translate(
+                                  'category_search_hint',
+                                ),
+                                prefixIcon: const Icon(Icons.search),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                suffixIcon:
+                                _searchTerm.isNotEmpty
+                                    ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed:
+                                      () => _searchController.clear(),
+                                )
+                                    : null,
+                              ),
+                            ),
+                          ),
+                          // Category list with callbacks
+                          Expanded(
+                            child: CategoryList(
+                              categories: filteredCategories,
+                              onTap: (category) {
+                                setState(() {
+                                  _selectedCategory = category;
+                                });
+                              },
+                              onLongPress:
+                                  (category) => confirmDeleteCategory(
+                                context,
+                                widget.userId,
+                                category,
+                              ),
+                              selectedCategory: _selectedCategory,
+                            ),
+                          ),
+                          // Clear selection button
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton.icon(
+                              onPressed: _clearSelectedCategory,
+                              icon: const Icon(Icons.clear),
+                              label: Text(
+                                loc.translate('clear_selection_label'),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // Category list with callbacks
-                    Expanded(
-                      child: CategoryList(
-                        categories: filteredCategories,
-                        onTap: (category) {
-                          setState(() {
-                            _selectedCategory = category;
-                          });
-                        },
-                        onLongPress: _confirmDelete,
-                      ),
-                    ),
-                    // Clear selection button
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton.icon(
-                        onPressed: _clearSelectedCategory,
-                        icon: const Icon(Icons.clear),
-                        label: const Text('Clear Selection'),
+                    const VerticalDivider(width: 1),
+                    Flexible(
+                      flex: 3,
+                      child: CategoryForm(
+                        userId: widget.userId,
+                        existingCategory: _selectedCategory,
+                        closeOnSubmit: false,
                       ),
                     ),
                   ],
-                ),
-              ),
-              const VerticalDivider(width: 1),
-              Flexible(
-                flex: 4,
-                child: CategoryForm(
-                  userId: widget.userId,
-                  existingCategory: _selectedCategory,
-                  closeOnSubmit: false,
                 ),
               ),
             ],
@@ -174,6 +217,4 @@ class _CategoryTabletPageState extends State<CategoryTabletPage>  with Automatic
       ),
     );
   }
-
-
 }
