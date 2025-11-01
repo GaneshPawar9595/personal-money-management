@@ -32,7 +32,7 @@ abstract class AuthRepository {
 
   /// Sends updates whenever the login status changes:
   /// it gives the person’s ID when logged in, or nothing (null) when logged out. [web:101][web:104]
-  Stream<String?> authStateStream();
+  String? getCurrentUserId();
 
   /// Looks up and returns the person’s latest profile details when given their unique ID. [web:101][web:104]
   Future<UserEntity?> getProfile({required String userId});

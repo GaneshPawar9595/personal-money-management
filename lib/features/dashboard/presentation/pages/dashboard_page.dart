@@ -15,33 +15,34 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  bool _loadedProviders = false; // Protection: To prevent duplicate loads
 
   @override
   void initState() {
     super.initState();
+    // Defer any data loading until after build and Provider setup
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final authProvider = context.read<AuthProvider>();
-      final user = authProvider.user;
-
-      if (user == null) return; // user not ready yet
-
-      // Fetch initial transactions without listening (safe during init)
-      Provider.of<TransactionProvider>(
-        context,
-        listen: false,
-      ).loadTransactions(user.id);
-
-      // Fetch initial transactions without listening (safe during init)
-      Provider.of<CategoryProvider>(
-        context,
-        listen: false,
-      ).loadCategories(user.id);
+      _loadInitialData();
     });
+  }
+
+  // Centralized data loading for transactions and categories
+  void _loadInitialData() {
+    if (_loadedProviders) return; // Avoid running twice
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final user = authProvider.user;
+
+    // Only load if user is available (ensured by splash & route guards)
+    if (authProvider.isLoggedIn && user != null) {
+      Provider.of<TransactionProvider>(context, listen: false).loadTransactions(user.id);
+      Provider.of<CategoryProvider>(context, listen: false).loadCategories(user.id);
+      _loadedProviders = true; // Mark providers as loaded
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Responsive: Use appropriate layout for screen size
     return ResponsiveLayout(
       mobileLayout: DashboardMobile(),
       tabletLayout: DashboardMobile(),

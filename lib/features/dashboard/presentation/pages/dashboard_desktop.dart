@@ -1,51 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:money_management/features/profile/presentation/pages/profile_page.dart';
-import 'package:money_management/features/transaction/presentation/pages/transaction_page.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/presentation/provider/auth_provider.dart';
 import '../../../category/presentation/pages/category_desktop_page.dart';
+import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../transaction/presentation/pages/transaction_page.dart';
 import '../widgets/desktop/desktop_home_screen.dart';
 
-/// This screen is the desktop dashboard:
-/// it shows a left menu, and the main area on the right changes when you pick a section
-/// (Dashboard, Transactions, Categories, Profile).
 class DashboardDesktop extends StatefulWidget {
-  const DashboardDesktop({super.key}); // Keep it simple: no settings needed to load this page.
+  const DashboardDesktop({super.key});
 
   @override
-  State<DashboardDesktop> createState() => _DashboardDesktopState(); // Creates the part that handles updates.
+  State<DashboardDesktop> createState() => _DashboardDesktopState();
 }
 
 class _DashboardDesktopState extends State<DashboardDesktop> {
-  int _selectedIndex = 0; // Which menu item is chosen right now.
+  int _selectedIndex = 0; // Track selected menu item
 
   @override
   Widget build(BuildContext context) {
-    // Watch the login state; this will refresh the screen when login changes. [web:101][web:104]
-    final auth = context.watch<AuthProvider>(); // [web:101][web:104]
-    final user = auth.user; // The person who’s logged in (or nothing if no one). [web:101][web:104]
+    // Watch for loading/auth state so UI updates on sign-in/out
+    final authProvider = context.watch<AuthProvider>();
+    final isLoggedIn = authProvider.isLoggedIn;
 
-    // If the app is busy (like logging in or loading profile), show a spinner. [web:101][web:104]
-    if (auth.loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator())); // [web:101][web:104]
+    // Show spinner while loading profile data.
+    if (authProvider.loading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // If no one is logged in, send the person to the sign‑in screen and show a friendly message. [web:101][web:104]
-    if (user == null) {
+    // Redirect to sign-in if no user is logged in.
+    if (!isLoggedIn) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return; // Make sure this screen is still visible before navigating. [web:101][web:104]
+        if (!mounted) return;// Make sure this screen is still visible before navigating. [web:101][web:104]
         // Only navigate if not already on /signin to avoid duplicate moves. [web:101][web:104]
-        final currentLoc = GoRouterState.of(context).uri.toString(); // Where we are now. [web:101][web:104]
-        if (currentLoc != '/signin')
-          context.go('/signin'); // Go to sign‑in if needed.
+        final currentLoc = GoRouterState.of(context).uri.toString();
+        if (currentLoc != '/signin') context.go('/signin');
       });
       return const Scaffold(
-        body: Center(child: Text('Redirecting to sign in...')), // Friendly note while moving.
+        body: Center(child: Text('Redirecting to sign in...')),
       );
     }
 
-    final userId = user.id; // Handy shortcut for passing into pages that need it.
+    // At this point: logged in and not loading—get user info.
+    final user = authProvider.user;
+    final userId = user?.id ?? '';
 
     // The right‑side content for each menu option; only the selected one is shown.
     final List<Widget> pages = [

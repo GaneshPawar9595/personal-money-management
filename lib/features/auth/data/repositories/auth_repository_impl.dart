@@ -53,7 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   /// Emits authentication state changes as a stream of userId or null. [web:12][web:14]
   @override
-  Stream<String?> authStateStream() => remoteDataSource.authStateStream(); // [web:12][web:14]
+  String? getCurrentUserId() => remoteDataSource.getCurrentUserId(); // [web:12][web:14]
 
   /// Fetches the latest profile for the given userId. [web:14]
   @override

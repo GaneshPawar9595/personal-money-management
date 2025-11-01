@@ -23,8 +23,8 @@ class AuthRemoteDataSource {
         _firestore = firestore ?? FirebaseFirestore.instance; // [web:27][web:40]
 
   /// Emits the current user's uid on auth changes, or null when signed out. [web:27][web:34]
-  Stream<String?> authStateStream() {
-    return _auth.authStateChanges().map((u) => u?.uid); // [web:27][web:34]
+  String? getCurrentUserId() {
+    return FirebaseAuth.instance.currentUser?.uid; // [web:27][web:34]
   }
 
   /// Creates a user with email/password, persists profile in 'users/{uid}', and returns the model. [web:27][web:40]

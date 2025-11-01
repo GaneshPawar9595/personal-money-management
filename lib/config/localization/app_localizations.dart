@@ -31,8 +31,17 @@ class AppLocalizations {
     return true;
   }
 
-  String translate(String key) {
-    return _localizedStrings[key] ?? '** $key not found';
+  String translate(String key, {List<String>? args}) {
+    final template = _localizedStrings[key];
+    if (template == null) return '** $key not found';
+
+    var result = template;
+    if (args != null && args.isNotEmpty) {
+      for (int i = 0; i < args.length; i++) {
+        result = result.replaceAll('{$i}', args[i]);
+      }
+    }
+    return result;
   }
 
   // Function to load all language files from assets/lang

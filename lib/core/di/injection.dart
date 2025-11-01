@@ -8,7 +8,7 @@ import '../../features/auth/data/datasources/auth_remote_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/get_profile_usecase.dart';
-import '../../features/auth/domain/usecases/observe_auth_state_usecase.dart';
+import '../../features/auth/domain/usecases/get_current_user_id.dart';
 import '../../features/auth/domain/usecases/sign_in_usecase.dart';
 import '../../features/auth/domain/usecases/sign_out_usecase.dart';
 import '../../features/auth/domain/usecases/sign_up_usecase.dart';
@@ -65,7 +65,7 @@ void setupLocator() {
 
   locator.registerLazySingleton<UpdateAvatarUsecase>(() => UpdateAvatarUsecase(locator()));
   locator.registerLazySingleton<UpdateProfileUsecase>(() => UpdateProfileUsecase(locator()));
-  locator.registerLazySingleton<ObserveAuthStateUsecase>(() => ObserveAuthStateUsecase(locator()));
+  locator.registerLazySingleton<GetCurrentUserId>(() => GetCurrentUserId(locator()));
   locator.registerLazySingleton<GetProfileUsecase>(() => GetProfileUsecase(locator()));
 
   // Register the AuthProvider which provides state management for authentication in the UI;
@@ -76,7 +76,7 @@ void setupLocator() {
     signOutUsecase: locator(),
     updateAvatarUsecase: locator(),
     updateProfileUsecase: locator(),
-    observeAuthState: locator(),
+    getCurrentUserId: locator(),
     getProfileUsecase: locator(),
   ));
 

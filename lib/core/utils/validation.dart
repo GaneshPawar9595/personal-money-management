@@ -10,18 +10,24 @@ class Validators {
   /// - If everything is okay → it returns null (means no error).
   static String? validateName(String? value, String nameRequiredMsg, String nameInvalidMsg) {
     // Check if the name is empty or null
-    if (value == null || value.trim().isEmpty == true) {
+    if (value == null || value.trim().isEmpty) {
       return nameRequiredMsg; // show "name is required" message
     }
 
-    // This currently checks if the name is 10 digits long (probably not what you want for a real name)
-    if (RegExp(r'^[0-9]{10}$').hasMatch(value) == false) {
+    // Regex for multiple words:
+    // Each word: starts and ends with a letter, may include hyphens or apostrophes inside.
+    // Words separated by a single space.
+    final namePattern = RegExp(r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$");
+
+    // Check against pattern
+    if (!namePattern.hasMatch(value.trim())) {
       return nameInvalidMsg; // show "invalid name" message
     }
 
     // If no problems found, return null (means valid)
     return null;
   }
+
 
   /// This method checks if the "Phone Number" entered by the user is valid.
   ///
