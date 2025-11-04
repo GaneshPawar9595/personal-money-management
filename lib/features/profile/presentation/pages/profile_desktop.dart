@@ -368,7 +368,16 @@ class _ProfileDesktopPageState extends State<ProfileDesktopPage> {
               .updateAvatarBase64(base64Image);
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      // Show error message in a SnackBar (red box at the bottom)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          duration: const Duration(seconds: 5),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _onRemoveAvatar() async {

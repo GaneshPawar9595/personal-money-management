@@ -9,14 +9,10 @@ class CategoryModel extends CategoryEntity {
     required super.name,
     required super.colorHex,
     required super.message,
-    required int iconCodePoint,
-    required String iconFontFamily,
-    String? iconFontPackage,
-  }) : super(
-    iconCodePoint: iconCodePoint,
-    iconFontFamily: iconFontFamily,
-    iconFontPackage: iconFontPackage,
-  );
+    required super.iconCodePoint,
+    required super.iconFontFamily,
+    super.iconFontPackage,
+  });
 
   /// Convert model to JSON Map for Firebase storage
   Map<String, dynamic> toJson() => {

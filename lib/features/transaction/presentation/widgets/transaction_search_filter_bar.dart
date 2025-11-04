@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../config/localization/app_localizations.dart'; // Adjust path if needed
 
 class TransactionSearchFilterBar extends StatelessWidget {
   final TextEditingController controller;
@@ -18,6 +19,8 @@ class TransactionSearchFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
@@ -26,7 +29,7 @@ class TransactionSearchFilterBar extends StatelessWidget {
             child: TextField(
               onChanged: onSearchChanged,
               decoration: InputDecoration(
-                hintText: "Search by note or category",
+                hintText: loc.translate('search_note_or_category'),
                 prefixIcon: const Icon(Icons.search),
                 fillColor: Colors.grey[100],
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -38,10 +41,10 @@ class TransactionSearchFilterBar extends StatelessWidget {
           PopupMenuButton<String>(
             icon: const Icon(Icons.filter_list),
             onSelected: onFilterSelected,
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: "All", child: Text("All")),
-              PopupMenuItem(value: "Income", child: Text("Income")),
-              PopupMenuItem(value: "Expense", child: Text("Expense")),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: "All", child: Text(loc.translate('all'))),
+              PopupMenuItem(value: "Income", child: Text(loc.translate('income'))),
+              PopupMenuItem(value: "Expense", child: Text(loc.translate('expense'))),
             ],
           ),
         ],

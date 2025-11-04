@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../../../config/localization/app_localizations.dart'; // Adjust path as needed
 
 class DateSelector extends StatelessWidget {
   final DateTime selectedDate;
@@ -13,11 +14,14 @@ class DateSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final formattedDate = DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(selectedDate);
+
     return Row(
       children: [
         Expanded(
           child: Text(
-            'Date: ${DateFormat('dd MMM yyyy').format(selectedDate)}',
+            '${loc.translate('date')}: $formattedDate',
             style: const TextStyle(fontSize: 16),
           ),
         ),
@@ -28,12 +32,13 @@ class DateSelector extends StatelessWidget {
               initialDate: selectedDate,
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
+              locale: Localizations.localeOf(context),
             );
             if (picked != null) {
               onDateSelected(picked);
             }
           },
-          child: const Text('Select Date'),
+          child: Text(loc.translate('select_date')),
         ),
       ],
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../config/localization/app_localizations.dart'; // Adjust path if needed
 import '../../domain/entities/transaction_entity.dart';
 import '../provider/transaction_provider.dart';
 import '../utils/delete_dialogs.dart';
@@ -16,10 +17,10 @@ class TransactionDesktopPage extends StatefulWidget {
   const TransactionDesktopPage({super.key, required this.userId});
 
   @override
-  _TransactionDesktopPageState createState() => _TransactionDesktopPageState();
+  State<TransactionDesktopPage> createState() => TransactionDesktopPageState();
 }
 
-class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
+class TransactionDesktopPageState extends State<TransactionDesktopPage> {
   late final TextEditingController _searchController;
   String _searchQuery = '';
   bool _showOnlyIncome = false;
@@ -32,19 +33,18 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
     _searchController = TextEditingController();
     _searchController.addListener(() {
       setState(() {
-        _searchQuery = _searchController.text.toString();
+        _searchQuery = _searchController.text;
         _clearSelectedTransaction();
       });
     });
 
-    // Load categories when the page opens for the first time
+    // Load transactions the first time the page appears
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       if (provider.transactions.isEmpty) {
         provider.loadTransactions(widget.userId);
       }
     });
-
   }
 
   void _onFilterSelected(String val) {
@@ -59,14 +59,15 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
     });
   }
 
-  void _confirmDelete(TransactionEntity transaction) async {
+  Future<void> _confirmDelete(TransactionEntity transaction) async {
+    final loc = AppLocalizations.of(context)!;
     final confirmed = await showDeleteConfirmationDialog(context, transaction.note);
     if (confirmed == true) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       await provider.deleteTransaction(widget.userId, transaction.id);
       if (provider.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete transaction: ${provider.error}')),
+          SnackBar(content: Text('${loc.translate('failed_to_delete_transaction')}: ${provider.error}')),
         );
       } else if (_selectedTransaction?.id == transaction.id) {
         _clearSelectedTransaction();
@@ -80,8 +81,8 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
     });
   }
 
-  /// Builds top app bar with title and user info
-  Widget _buildTopBar() {
+  Widget _buildTopBar(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
@@ -96,9 +97,8 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
       ),
       child: Row(
         children: [
-          // Dashboard Title
           Text(
-            'Transaction',
+            loc.translate('transaction'),
             style: GoogleFonts.poppins(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -112,11 +112,16 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       body: Consumer<TransactionProvider>(
         builder: (context, provider, _) {
-          if (provider.isLoading) return const Center(child: CircularProgressIndicator());
-          if (provider.error != null) return Center(child: Text('Error: ${provider.error}'));
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (provider.error != null) {
+            return Center(child: Text('${loc.translate('error')}: ${provider.error}'));
+          }
 
           final filteredTransactions = filterTransactions(
             provider.transactions,
@@ -127,7 +132,7 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
 
           return Column(
             children: [
-              _buildTopBar(),
+              _buildTopBar(context),
               Expanded(
                 child: Row(
                   children: [
@@ -155,7 +160,7 @@ class _TransactionDesktopPageState extends State<TransactionDesktopPage> {
                             child: ElevatedButton.icon(
                               onPressed: _clearSelectedTransaction,
                               icon: const Icon(Icons.clear),
-                              label: const Text('Clear Selection'),
+                              label: Text(loc.translate('clear_selection_label')),
                             ),
                           ),
                         ],

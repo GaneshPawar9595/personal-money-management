@@ -37,7 +37,7 @@ class SignUpDesktop extends StatelessWidget {
         Expanded(
           flex: 3, // Takes more space to give a nice visual balance
           child: Container(
-            color: Colors.blueAccent.withOpacity(0.05), // Light background tint
+            color: Colors.blueAccent.withValues(alpha: 0.05), // Light background tint
             child: Center(
               child: Lottie.asset(
                 'assets/lottie/login_animation.json',

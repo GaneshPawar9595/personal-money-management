@@ -89,4 +89,12 @@ class Validators {
     }
     return null;
   }
+
+  static String? validateAmount(String? value, String requiredMsg, String invalidMsg) {
+    if (value == null || value.trim().isEmpty) return requiredMsg;
+    final isNumeric = double.tryParse(value.trim()) != null;
+    if (!isNumeric) return invalidMsg;
+    // You can also add: if (double.parse(value.trim()) <= 0) { ... }
+    return null;
+  }
 }

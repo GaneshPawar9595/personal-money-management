@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../config/localization/app_localizations.dart'; // Adjust import as needed
+import '../../../../core/utils/validation.dart';
 import '../../../../shared/widgets/custom_input_field.dart';
+import '../../../../shared/widgets/date_selector_widget.dart';
 import '../../../category/presentation/widgets/category_dropdown.dart';
 import '../../../transaction/domain/entities/transaction_entity.dart';
 import '../../../category/domain/entities/category_entity.dart';
 import '../provider/transaction_provider.dart';
-
-import 'date_selector_widget.dart';
 import 'income_expense_switch.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -76,15 +77,16 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   Future<void> _submit() async {
+    final loc = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
     if (selectedCategory == null) {
-      _showError('Please select a category');
+      _showError(loc.translate('please_select_category'));
       return;
     }
 
     final amount = double.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      _showError('Enter a valid amount');
+      _showError(loc.translate('enter_valid_amount'));
       return;
     }
 
@@ -110,8 +112,8 @@ class _TransactionFormState extends State<TransactionForm> {
       if (provider.error == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(widget.existingTransaction == null
-              ? 'Transaction added successfully'
-              : 'Transaction updated successfully'),
+              ? loc.translate('transaction_added_success')
+              : loc.translate('transaction_updated_success')),
           backgroundColor: Colors.green,
         ));
 
@@ -124,7 +126,7 @@ class _TransactionFormState extends State<TransactionForm> {
         _showError(provider.error!);
       }
     } catch (e) {
-      _showError('Unexpected error: $e');
+      _showError('${loc.translate('unexpected_error')}: $e');
     } finally {
       setState(() => _isSubmitting = false);
     }
@@ -132,6 +134,7 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.all(32),
@@ -141,8 +144,8 @@ class _TransactionFormState extends State<TransactionForm> {
             children: [
               Text(
                 widget.existingTransaction == null
-                    ? 'Add Transaction'
-                    : 'Edit Transaction',
+                    ? loc.translate('add_transaction')
+                    : loc.translate('edit_transaction'),
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
@@ -153,20 +156,22 @@ class _TransactionFormState extends State<TransactionForm> {
 
               CustomInputField(
                 controller: _amountController,
-                hintText: 'Enter amount',
-                label: 'Amount',
+                hintText: loc.translate('enter_amount'),
+                label: loc.translate('amount'),
                 icon: Icons.currency_rupee,
-                keyboardType:
-                const TextInputType.numberWithOptions(decimal: true),
-                validator: (val) =>
-                (val == null || val.isEmpty) ? 'Amount required' : null,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                validator: (val) => Validators.validateAmount(
+                  val,
+                  loc.translate('amount_required'),
+                  loc.translate('enter_valid_amount'),
+                ),
               ),
               const SizedBox(height: 16),
 
               CustomInputField(
                 controller: _noteController,
-                hintText: 'Optional note',
-                label: 'Note',
+                hintText: loc.translate('optional_note'),
+                label: loc.translate('note'),
                 icon: Icons.note,
               ),
               const SizedBox(height: 16),
@@ -194,8 +199,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 onPressed: _isSubmitting ? null : _submit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -207,7 +211,9 @@ class _TransactionFormState extends State<TransactionForm> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
                     : Text(
-                  widget.existingTransaction == null ? 'Add' : 'Update',
+                  widget.existingTransaction == null
+                      ? loc.translate('add')
+                      : loc.translate('update'),
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

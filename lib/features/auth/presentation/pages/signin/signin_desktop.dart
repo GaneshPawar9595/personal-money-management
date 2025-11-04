@@ -25,7 +25,7 @@ class SignInDesktop extends StatelessWidget {
         Expanded(
           flex: 3, // Takes up more space than the form section
           child: Container(
-            color: Colors.blueAccent.withOpacity(0.1), // Light blue background
+            color: Colors.blueAccent.withValues(alpha:0.1), // Light blue background
             child: Center(
               // Center the Lottie animation in the available space
               child: Lottie.asset(

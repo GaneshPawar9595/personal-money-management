@@ -13,7 +13,7 @@ class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key, required this.userId});
 
   @override
-  _TransactionPageState createState() => _TransactionPageState();
+  State<TransactionPage> createState() => _TransactionPageState();
 }
 
 class _TransactionPageState extends State<TransactionPage> {

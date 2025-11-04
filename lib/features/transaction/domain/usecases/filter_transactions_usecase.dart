@@ -1,6 +1,6 @@
 import '../entities/transaction_entity.dart';
 
-class TransactionFilter {
+class FilterTransactionsUseCase  {
   /// Filters transactions by optional category, income/expense flag, and date.
   static List<TransactionEntity> filterTransactions(
       List<TransactionEntity> transactions, {

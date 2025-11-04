@@ -58,5 +58,34 @@
   "category_updated_success": "Category updated successfully!",
   "clear_selection_label": "Clear Selection",
   "color_picker_title": "Pick a color",
-  "select_button": "Select"
+  "select_button": "Select",
+
+  "transaction": "Transaction",
+  "error": "Error",
+  "add_transaction": "Add Transaction",
+  "failed_to_delete_transaction": "Failed to delete transaction",
+  "income": "Income",
+  "expense": "Expense",
+  "edit_transaction": "Edit Transaction",
+  "transaction_added_success": "Transaction added successfully",
+  "transaction_updated_success": "Transaction updated successfully",
+  "please_select_category": "Please select a category",
+  "enter_valid_amount": "Enter a valid amount",
+  "amount_required": "Amount required",
+  "enter_amount": "Enter amount",
+  "amount": "Amount",
+  "optional_note": "Optional note",
+  "note": "Note",
+  "add": "Add",
+  "update": "Update",
+  "unexpected_error": "Unexpected error",
+  "no_transactions_found": "No transactions found",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "search_note_or_category": "Search by note or category",
+  "all": "All",
+
+  "date": "Date",
+  "select_date": "Select Date"
+
 }

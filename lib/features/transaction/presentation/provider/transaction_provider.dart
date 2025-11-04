@@ -3,8 +3,7 @@ import 'package:money_management/features/transaction/domain/entities/transactio
 import 'package:money_management/features/transaction/domain/usecases/add_transaction_usecase.dart';
 import 'package:money_management/features/transaction/domain/usecases/get_transaction_usecase.dart';
 import '../../domain/usecases/delete_transaction_usecase.dart';
-import '../../domain/utils/get_today_amount_status_usecase.dart';
-import '../../domain/utils/transaction_filter.dart';
+import '../../domain/usecases/get_today_amount_status_usecase.dart';
 import '../../domain/usecases/update_transaction_usecase.dart';
 
 /// Provider managing transactions data and state.
@@ -111,42 +110,14 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  /// Returns list of transactions filtered by criteria using domain utility
-  List<TransactionEntity> filterTransactions({
-    String? categoryId,
-    bool? incomeFilter,
-    DateTime? dateFilter,
-  }) {
-    return TransactionFilter.filterTransactions(
-      _transactions,
-      categoryId: categoryId,
-      incomeFilter: incomeFilter,
-      dateFilter: dateFilter,
-    );
+  // Total Balance
+  double getTotalAmount() {
+    return _transactions.fold(0.0, (sum, t) => sum + (t.isIncome ? t.amount : -t.amount));
   }
 
   /// Example: Calculate today's amount status using a dedicated use case or utility
   double getTodayAmountStatus() {
     return GetTodayAmountStatusUseCase.getTodayAmountStatus(_transactions);
-  }
-
-  double getTotalAmount() {
-    return _transactions.fold(0.0, (sum, t) => sum + (t.isIncome ? t.amount : -t.amount));
-  }
-
-  List<double> getMonthlyTotals({required bool incomeFilter}) {
-    // Initialize list with zero for each month (Jan to Dec)
-    List<double> monthlyTotals = List.filled(12, 0.0);
-
-    // Filter transactions per your params
-    final filtered = filterTransactions(incomeFilter: incomeFilter);
-
-    for (final t in filtered) {
-      final monthIndex = t.date.month - 1; // DateTime.month is 1-based
-      monthlyTotals[monthIndex] += t.amount;
-    }
-
-    return monthlyTotals;
   }
 
 }

@@ -7,7 +7,7 @@ import '../../../../auth/presentation/provider/auth_provider.dart';
 import '../../../../transaction/domain/entities/transaction_entity.dart';
 import '../../../../transaction/presentation/provider/transaction_provider.dart';
 import '../../../../transaction/presentation/utils/delete_dialogs.dart';
-import '../../../../transaction/presentation/widgets/transaction_from_wrapper.dart';
+import '../../../../transaction/presentation/utils/transaction_form_wrapper.dart';
 import '../../provider/dashboard_provider.dart';
 import 'desktop_stats_card.dart';
 import 'desktop_top_merchants_section.dart';

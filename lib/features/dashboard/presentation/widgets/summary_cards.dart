@@ -5,7 +5,7 @@ class SummaryCards extends StatelessWidget {
   final double expense;
   final double net;
 
-  const SummaryCards({required this.income, required this.expense, required this.net});
+  const SummaryCards({super.key, required this.income, required this.expense, required this.net});
 
   @override
   Widget build(BuildContext context) {

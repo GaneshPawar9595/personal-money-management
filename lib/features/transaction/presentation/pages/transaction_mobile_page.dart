@@ -6,9 +6,10 @@ import '../../domain/entities/transaction_entity.dart';
 import '../provider/transaction_provider.dart';
 import '../utils/delete_dialogs.dart';
 import '../utils/transaction_filter.dart';
-import '../widgets/transaction_from_wrapper.dart';
+import '../utils/transaction_form_wrapper.dart';
 import '../widgets/transaction_list.dart';
 import '../widgets/transaction_search_filter_bar.dart';
+import '../../../../config/localization/app_localizations.dart'; // Adjust path if necessary
 
 class TransactionMobilePage extends StatefulWidget {
   final String userId;
@@ -16,10 +17,10 @@ class TransactionMobilePage extends StatefulWidget {
   const TransactionMobilePage({super.key, required this.userId});
 
   @override
-  State<TransactionMobilePage> createState() => _TransactionMobilePageState();
+  State<TransactionMobilePage> createState() => TransactionMobilePageState();
 }
 
-class _TransactionMobilePageState extends State<TransactionMobilePage> {
+class TransactionMobilePageState extends State<TransactionMobilePage> {
   late final TextEditingController _searchController;
   String _searchQuery = '';
   bool _showOnlyIncome = false;
@@ -31,11 +32,11 @@ class _TransactionMobilePageState extends State<TransactionMobilePage> {
     _searchController = TextEditingController();
     _searchController.addListener(() {
       setState(() {
-        _searchQuery = _searchController.text.toString();
+        _searchQuery = _searchController.text;
       });
     });
 
-    // Load categories when the page opens for the first time
+    // Loads transactions when the page opens for the first time
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       if (provider.transactions.isEmpty) {
@@ -55,14 +56,15 @@ class _TransactionMobilePageState extends State<TransactionMobilePage> {
     });
   }
 
-  void _confirmDelete(TransactionEntity transaction) async {
+  Future<void> _confirmDelete(TransactionEntity transaction) async {
+    final loc = AppLocalizations.of(context)!;
     final confirmed = await showDeleteConfirmationDialog(context, transaction.note);
     if (confirmed == true) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       await provider.deleteTransaction(widget.userId, transaction.id);
       if (provider.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete transaction: ${provider.error}')),
+          SnackBar(content: Text('${loc.translate('failed_to_delete_transaction')}: ${provider.error}')),
         );
       }
     }
@@ -70,65 +72,56 @@ class _TransactionMobilePageState extends State<TransactionMobilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.pop(); // or Navigator.pop(context);
-          },
+          onPressed: () => context.pop(),
         ),
-        title: const Text('Transaction'),
+        title: Text(loc.translate('transaction')),
       ),
-        body: Consumer<TransactionProvider>(
-          builder: (context, provider, _) {
-            if (provider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (provider.error != null) {
-              return Center(child: Text('Error: ${provider.error}'));
-            }
+      body: Consumer<TransactionProvider>(
+        builder: (context, provider, _) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (provider.error != null) {
+            return Center(child: Text('${loc.translate('error')}: ${provider.error}'));
+          }
 
-            final filteredTransactions = filterTransactions(
-              provider.transactions,
-              _searchQuery,
-              _showOnlyIncome,
-              _showOnlyExpense,
-            );
+          final filteredTransactions = filterTransactions(
+            provider.transactions,
+            _searchQuery,
+            _showOnlyIncome,
+            _showOnlyExpense,
+          );
 
-            return Row(
-              children: [
-                // LEFT PANEL - Transaction List
-                Flexible(
-                  flex: 3,
-                  child: Column(
-                    children: [
-                    TransactionSearchFilterBar(
-                    controller: _searchController,
-                    showOnlyIncome: _showOnlyIncome,
-                    showOnlyExpense: _showOnlyExpense,
-                    onSearchChanged: (val) => setState(() => _searchQuery = val),
-                    onFilterSelected: _onFilterSelected,
-                  ),
-                      Expanded(
-                        child: TransactionList(
-                          transactions: filteredTransactions,
-                          onTap: (transaction) {
-                            showTransactionForm(context, widget.userId, transaction);
-                          },
-                          onLongPress: _confirmDelete,
-                        ),
-                      ),
-                    ],
-                  ),
+          return Column(
+            children: [
+              TransactionSearchFilterBar(
+                controller: _searchController,
+                showOnlyIncome: _showOnlyIncome,
+                showOnlyExpense: _showOnlyExpense,
+                onSearchChanged: (val) => setState(() => _searchQuery = val),
+                onFilterSelected: _onFilterSelected,
+              ),
+              Expanded(
+                child: TransactionList(
+                  transactions: filteredTransactions,
+                  onTap: (transaction) {
+                    showTransactionForm(context, widget.userId, transaction);
+                  },
+                  onLongPress: _confirmDelete,
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showTransactionForm(context, widget.userId, null),
-        tooltip: 'Add Category',
+        tooltip: loc.translate('add_transaction'),
         child: const Icon(Icons.add),
       ),
     );

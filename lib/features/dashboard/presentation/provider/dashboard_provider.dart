@@ -18,7 +18,7 @@ class DashboardProvider extends ChangeNotifier {
   List<TransactionEntity> _transactions = [];
   TimeRange _selectedMerchantsRange = TimeRange.monthly;
   TimeRange _selectedTrendsRange = TimeRange.monthly;
-  TimeRange _selectedCategoryRange = TimeRange.monthly; // ✅ NEW: For category breakdown
+  TimeRange _selectedCategoryRange = TimeRange.monthly;
 
   // Cached calculations (recalculated when transactions or filters change)
   List<CategorySummaryEntity>? _cachedCategorySummary;
@@ -37,11 +37,11 @@ class DashboardProvider extends ChangeNotifier {
         _recentTransactionsUseCase =
             recentTransactionsUseCase ?? GetRecentTransactionsUseCase();
 
-  // Getters
+  // Getters for state
   List<TransactionEntity> get transactions => _transactions;
   TimeRange get selectedMerchantsRange => _selectedMerchantsRange;
   TimeRange get selectedTrendsRange => _selectedTrendsRange;
-  TimeRange get selectedCategoryRange => _selectedCategoryRange; // ✅ NEW
+  TimeRange get selectedCategoryRange => _selectedCategoryRange;
 
   /// Updates transactions and invalidates cache
   void setTransactions(List<TransactionEntity> transactions) {
@@ -74,6 +74,19 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Helper: Get start date for a range type (centralizes logic)
+  DateTime getStartDateForRange(TimeRange range) {
+    final now = DateTime.now();
+    switch (range) {
+      case TimeRange.weekly:
+        return now.subtract(const Duration(days: 7));
+      case TimeRange.monthly:
+        return DateTime(now.year, now.month, 1);
+      case TimeRange.yearly:
+        return DateTime(now.year, 1, 1);
+    }
+  }
+
   /// Gets recent transactions (cached)
   List<TransactionEntity> getRecentTransactions({int limit = 3}) {
     _cachedRecentTransactions ??= _recentTransactionsUseCase(
@@ -83,35 +96,14 @@ class DashboardProvider extends ChangeNotifier {
     return _cachedRecentTransactions!;
   }
 
-  /// ✅ UPDATED: Gets category spending summary with percentages (cached)
-  /// Now filtered by selected time range
+  /// Gets category spending summary with percentages (cached)
   List<CategorySummaryEntity> getCategorySummary() {
-    _cachedCategorySummary ??= _getCategorySummaryForRange();
-    return _cachedCategorySummary!;
-  }
-
-  /// ✅ NEW: Calculates category summary based on selected time range
-  List<CategorySummaryEntity> _getCategorySummaryForRange() {
-    final now = DateTime.now();
-    DateTime? startDate;
-
-    switch (_selectedCategoryRange) {
-      case TimeRange.weekly:
-        startDate = now.subtract(const Duration(days: 7));
-        break;
-      case TimeRange.monthly:
-        startDate = DateTime(now.year, now.month - 1, now.day);
-        break;
-      case TimeRange.yearly:
-        startDate = DateTime(now.year - 1, now.month, now.day);
-        break;
-    }
-
-    return _categorySummaryUseCase(
+    _cachedCategorySummary ??= _categorySummaryUseCase(
       transactions: _transactions,
-      startDate: startDate,
+      startDate: getStartDateForRange(_selectedCategoryRange),
       calculatePercentage: true,
     );
+    return _cachedCategorySummary!;
   }
 
   /// Gets total spending amount
@@ -126,34 +118,14 @@ class DashboardProvider extends ChangeNotifier {
     return summary.isNotEmpty ? summary.first : null;
   }
 
-  /// Gets merchant summary filtered by time range (cached per range)
+  /// Gets merchant summary filtered by time range (cached)
   List<CategorySummaryEntity> getMerchantSummary() {
-    _cachedMerchantSummary ??= _getMerchantSummaryForRange();
-    return _cachedMerchantSummary!;
-  }
-
-  /// Calculates merchant summary based on selected time range
-  List<CategorySummaryEntity> _getMerchantSummaryForRange() {
-    final now = DateTime.now();
-    DateTime? startDate;
-
-    switch (_selectedMerchantsRange) {
-      case TimeRange.weekly:
-        startDate = now.subtract(const Duration(days: 7));
-        break;
-      case TimeRange.monthly:
-        startDate = DateTime(now.year, now.month - 1, now.day);
-        break;
-      case TimeRange.yearly:
-        startDate = DateTime(now.year - 1, now.month, now.day);
-        break;
-    }
-
-    return _categorySummaryUseCase(
+    _cachedMerchantSummary ??= _categorySummaryUseCase(
       transactions: _transactions,
-      startDate: startDate,
+      startDate: getStartDateForRange(_selectedMerchantsRange),
       calculatePercentage: false,
     );
+    return _cachedMerchantSummary!;
   }
 
   /// Gets spending trends (cached per range)

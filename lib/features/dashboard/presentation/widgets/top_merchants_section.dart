@@ -61,6 +61,7 @@ class TopMerchantsSection extends StatelessWidget {
                   amount: summary.amount,
                   count: summary.transactionCount,
                   userId: userId,
+                  selectedRange: dashboardProvider.selectedMerchantsRange,
                 );
               },
             ),

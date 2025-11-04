@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../config/localization/app_localizations.dart'; // Adjust path as needed
 
 class IncomeExpenseSwitch extends StatelessWidget {
   final bool isIncome;
@@ -12,10 +13,17 @@ class IncomeExpenseSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Income', style: TextStyle(fontSize: 16)),
+        Text(
+          isIncome
+              ? loc.translate('income')
+              : loc.translate('expense'),
+          style: const TextStyle(fontSize: 16),
+        ),
         Switch(
           activeColor: Colors.deepPurple,
           value: isIncome,

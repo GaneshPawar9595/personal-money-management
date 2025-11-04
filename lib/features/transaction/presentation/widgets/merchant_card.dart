@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:money_management/features/transaction/presentation/widgets/transaction_form.dart';
+import '../../../../core/utils/date_range_utils.dart';
 import '../../../category/domain/entities/category_entity.dart';
+import '../../../dashboard/domain/usecases/calculate_spending_trends_usecase.dart';
 import '../provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +13,7 @@ class MerchantCard extends StatelessWidget {
   final double amount;
   final int count;
   final String userId;
+  final TimeRange selectedRange;
 
   const MerchantCard({
     super.key,
@@ -18,6 +21,7 @@ class MerchantCard extends StatelessWidget {
     required this.amount,
     required this.count,
     required this.userId,
+    required this.selectedRange
   });
 
   @override
@@ -27,7 +31,7 @@ class MerchantCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        _showMerchantTransactions(context, category.name, userId);
+        _showMerchantTransactions(context, category.name, userId, selectedRange);
       },
       child: Card(
         elevation: 3,
@@ -90,7 +94,7 @@ class MerchantCard extends StatelessWidget {
     );
   }
 
-  void _showMerchantTransactions(BuildContext context, String category, String userId) {
+  void _showMerchantTransactions(BuildContext context, String category, String userId, TimeRange selectedRange) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -146,9 +150,13 @@ class MerchantCard extends StatelessWidget {
                 Expanded(
                   child: Consumer<TransactionProvider>(
                     builder: (context, provider, _) {
-                      final categoryTxns = provider.transactions
-                          .where((t) => t.categoryEntity.name == category)
-                          .toList();
+                      final dateRange = getDateRangeForTimeRange(selectedRange);
+                      // Now filter by selected range as well!
+                      final categoryTxns = provider.transactions.where((t) {
+                        return t.categoryEntity.name == category &&
+                            !t.date.isBefore(dateRange.start) &&
+                            !t.date.isAfter(dateRange.end);
+                      }).toList();
 
                       if (categoryTxns.isEmpty) {
                         return Center(

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../config/localization/app_localizations.dart'; // Adjust this path as needed
 import '../../domain/entities/transaction_entity.dart';
 import '../provider/transaction_provider.dart';
 import '../utils/delete_dialogs.dart';
 import '../utils/transaction_filter.dart';
-import '../widgets/transaction_from_wrapper.dart';
+import '../utils/transaction_form_wrapper.dart';
 import '../widgets/transaction_list.dart';
 import '../widgets/transaction_search_filter_bar.dart';
 
@@ -15,10 +16,10 @@ class TransactionTabletPage extends StatefulWidget {
   const TransactionTabletPage({super.key, required this.userId});
 
   @override
-  State<TransactionTabletPage> createState() => _TransactionTabletPageState();
+  State<TransactionTabletPage> createState() => TransactionTabletPageState();
 }
 
-class _TransactionTabletPageState extends State<TransactionTabletPage> {
+class TransactionTabletPageState extends State<TransactionTabletPage> {
   late final TextEditingController _searchController;
   String _searchQuery = '';
   bool _showOnlyIncome = false;
@@ -30,11 +31,11 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
     _searchController = TextEditingController();
     _searchController.addListener(() {
       setState(() {
-        _searchQuery = _searchController.text.toString();
+        _searchQuery = _searchController.text;
       });
     });
 
-    // Load categories when the page opens for the first time
+    // Load transactions when the page opens for the first time
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       if (provider.transactions.isEmpty) {
@@ -54,18 +55,16 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
     });
   }
 
-  void _confirmDelete(TransactionEntity transaction) async {
-    final confirmed = await showDeleteConfirmationDialog(
-      context,
-      transaction.note,
-    );
+  Future<void> _confirmDelete(TransactionEntity transaction) async {
+    final loc = AppLocalizations.of(context)!;
+    final confirmed = await showDeleteConfirmationDialog(context, transaction.note);
     if (confirmed == true) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
       await provider.deleteTransaction(widget.userId, transaction.id);
       if (provider.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete transaction: ${provider.error}'),
+            content: Text('${loc.translate('failed_to_delete_transaction')}: ${provider.error}'),
           ),
         );
       }
@@ -74,15 +73,16 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Transaction')),
+      appBar: AppBar(title: Text(loc.translate('transaction'))),
       body: Consumer<TransactionProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           if (provider.error != null) {
-            return Center(child: Text('Error: ${provider.error}'));
+            return Center(child: Text('${loc.translate('error')}: ${provider.error}'));
           }
 
           final filteredTransactions = filterTransactions(
@@ -94,7 +94,6 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
 
           return Row(
             children: [
-              // LEFT PANEL - Transaction List
               Flexible(
                 flex: 3,
                 child: Column(
@@ -103,8 +102,7 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
                       controller: _searchController,
                       showOnlyIncome: _showOnlyIncome,
                       showOnlyExpense: _showOnlyExpense,
-                      onSearchChanged:
-                          (val) => setState(() => _searchQuery = val),
+                      onSearchChanged: (val) => setState(() => _searchQuery = val),
                       onFilterSelected: _onFilterSelected,
                     ),
                     Expanded(
@@ -129,7 +127,7 @@ class _TransactionTabletPageState extends State<TransactionTabletPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showTransactionForm(context, widget.userId, null),
-        tooltip: 'Add Category',
+        tooltip: loc.translate('add_transaction'),
         child: const Icon(Icons.add),
       ),
     );

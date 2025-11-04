@@ -94,10 +94,16 @@ class _CategoryFormState extends State<CategoryForm> {
     setState(() {
       if (picked?.data != null) {
         _selectedIcon = picked!.data;
-        _selectedIconFontFamily = picked.pack == IconPack.material
-            ? 'MaterialIcons'
-            : 'CupertinoIcons';
-        _selectedIconFontPackage = null;
+        if (picked.pack == IconPack.material) {
+          _selectedIconFontFamily = 'MaterialIcons';
+          _selectedIconFontPackage = null;
+        } else if (picked.pack == IconPack.cupertino) {
+          _selectedIconFontFamily = 'CupertinoIcons';
+          _selectedIconFontPackage = 'cupertino_icons'; // <-- Critical Fix
+        } else {
+          _selectedIconFontFamily = 'MaterialIcons';
+          _selectedIconFontPackage = null;
+        }
       } else {
         // Default fallback icon if user cancels selection
         _selectedIcon = Icons.category;
