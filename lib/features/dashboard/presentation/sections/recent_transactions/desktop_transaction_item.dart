@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:money_management/config/localization/app_localizations.dart';
 import '../../../../transaction/domain/entities/transaction_entity.dart';
 
 /// Compact transaction item for desktop sidebar
@@ -18,6 +19,7 @@ class DesktopTransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       leading: CircleAvatar(
@@ -74,20 +76,23 @@ class DesktopTransactionItem extends StatelessWidget {
               PopupMenuItem(
                 value: 'edit',
                 child: Row(
-                  children: const [
-                    Icon(Icons.edit, size: 18),
-                    SizedBox(width: 8),
-                    Text('Edit'),
+                  children: [
+                    const Icon(Icons.edit, size: 18),
+                    const SizedBox(width: 8),
+                    Text(loc.translate('edit')),
                   ],
                 ),
               ),
               PopupMenuItem(
                 value: 'delete',
                 child: Row(
-                  children: const [
-                    Icon(Icons.delete, size: 18, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Delete', style: TextStyle(color: Colors.red)),
+                  children: [
+                    const Icon(Icons.delete, size: 18, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Text(
+                      loc.translate('delete'),
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   ],
                 ),
               ),

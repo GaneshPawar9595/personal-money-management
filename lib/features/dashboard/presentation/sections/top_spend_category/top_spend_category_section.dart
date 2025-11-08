@@ -3,8 +3,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:money_management/features/dashboard/presentation/widgets/time_range_selector.dart';
 import 'package:provider/provider.dart';
-import '../provider/dashboard_provider.dart';
-import '../../domain/entities/category_summary_entity.dart';
+import '../../../../../config/localization/app_localizations.dart';
+import '../../provider/dashboard_provider.dart';
+import '../../../domain/entities/category_summary_entity.dart';
 
 /// Top spending category section with pie chart and breakdown
 class TopSpendCategorySection extends StatelessWidget {
@@ -12,6 +13,8 @@ class TopSpendCategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Consumer<DashboardProvider>(
       builder: (context, dashboardProvider, child) {
         final categorySummary = dashboardProvider.getCategorySummary();
@@ -21,7 +24,7 @@ class TopSpendCategorySection extends StatelessWidget {
         if (categorySummary.isEmpty || topCategory == null) {
           return Center(
             child: Text(
-              "No Spend Data Available",
+              loc.translate('no_spend_data_available'),
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
           );
@@ -36,7 +39,11 @@ class TopSpendCategorySection extends StatelessWidget {
               TimeRangeSelector(
                 selectedRange: dashboardProvider.selectedCategoryRange,
                 onRangeChanged: dashboardProvider.setCategoryRange,
-                labels: const ['This Week', 'This Month', 'This Year'],
+                labels: [
+                   loc.translate('this_week'),
+                   loc.translate('this_month'),
+                   loc.translate('this_year')
+                ],
               ),
               const SizedBox(height: 16),
 
@@ -62,7 +69,7 @@ class TopSpendCategorySection extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Category breakdown list
-              ..._buildExpenseList(categorySummary),
+              ..._buildExpenseList(categorySummary, loc),
             ],
           ),
         );
@@ -106,7 +113,7 @@ class TopSpendCategorySection extends StatelessWidget {
   }
 
   /// Builds list of category expense items
-  List<Widget> _buildExpenseList(List<CategorySummaryEntity> categories) {
+  List<Widget> _buildExpenseList(List<CategorySummaryEntity> categories, AppLocalizations loc) {
     return categories.map((expense) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -136,7 +143,7 @@ class TopSpendCategorySection extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "${expense.transactionCount} transactions",
+                    loc.translate('category_transaction_count', args: [expense.transactionCount.toString()]),
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       color: Colors.grey,

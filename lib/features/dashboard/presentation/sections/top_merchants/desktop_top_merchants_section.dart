@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../top_spend_category_section.dart';
+import '../../../../../config/localization/app_localizations.dart';
+import 'top_merchants_section.dart';
 
-/// Desktop category breakdown with pie chart
-class DesktopCategoryBreakdownSection extends StatelessWidget {
-  const DesktopCategoryBreakdownSection({super.key});
+/// Desktop top merchants with enhanced card layout
+class DesktopTopMerchantsSection extends StatelessWidget {
+  final String userId;
+
+  const DesktopTopMerchantsSection({
+    super.key,
+    required this.userId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -20,12 +27,12 @@ class DesktopCategoryBreakdownSection extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.pie_chart,
+                  Icons.store,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Category Breakdown',
+                  loc.translate('top_merchants_title'),
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -36,7 +43,7 @@ class DesktopCategoryBreakdownSection extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Content
-            const TopSpendCategorySection(),
+            TopMerchantsSection(userId: userId, crossAxisItemCount: 3,),
           ],
         ),
       ),

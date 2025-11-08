@@ -44,9 +44,9 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     // Responsive: Use appropriate layout for screen size
     return ResponsiveLayout(
-      mobileLayout: DashboardMobile(),
-      tabletLayout: DashboardMobile(),
-      desktopLayout: DashboardDesktop(),
+      mobileLayout: const DashboardMobile(),
+      tabletLayout: const DashboardMobile(),
+      desktopLayout: const DashboardDesktop(),
     );
   }
 }

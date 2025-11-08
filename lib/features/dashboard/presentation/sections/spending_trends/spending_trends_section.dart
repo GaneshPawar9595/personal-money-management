@@ -3,9 +3,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../provider/dashboard_provider.dart';
-import 'time_range_selector.dart';
-import '../../domain/usecases/calculate_spending_trends_usecase.dart';
+import '../../../../../config/localization/app_localizations.dart';
+import '../../provider/dashboard_provider.dart';
+import '../../widgets/time_range_selector.dart';
+import '../../../domain/usecases/calculate_spending_trends_usecase.dart';
 
 /// Spending trends chart with time range selector
 class SpendingTrendsSection extends StatefulWidget {
@@ -45,6 +46,7 @@ class _SpendingTrendsSectionState extends State<SpendingTrendsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Consumer<DashboardProvider>(
       builder: (context, dashboardProvider, child) {
         final trends = dashboardProvider.getSpendingTrends();
@@ -56,7 +58,7 @@ class _SpendingTrendsSectionState extends State<SpendingTrendsSection> {
         if (trends.isEmpty) {
           return Center(
             child: Text(
-              "No Spend Trends Available",
+              loc.translate('no_spend_trends_available'),
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
           );
@@ -94,8 +96,8 @@ class _SpendingTrendsSectionState extends State<SpendingTrendsSection> {
             // Feedback message
             Text(
               isIncrease
-                  ? "Spending has increased, consider budgeting carefully!"
-                  : "Spending has decreased, great discipline!",
+                  ? loc.translate('spending_increased_msg')
+                  : loc.translate('spending_decreased_msg'),
               style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
             ),
             const SizedBox(height: 10),
@@ -109,7 +111,11 @@ class _SpendingTrendsSectionState extends State<SpendingTrendsSection> {
                   selectedBarIndex = null; // Reset selection on range change
                 });
               },
-              labels: const ['Weekly', 'Monthly', 'Yearly'],
+              labels: [
+                loc.translate('weekly'),
+                loc.translate('monthly'),
+                loc.translate('yearly'),
+              ],
             ),
             const SizedBox(height: 20),
 

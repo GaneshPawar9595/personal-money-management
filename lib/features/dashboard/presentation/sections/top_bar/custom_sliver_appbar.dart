@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:money_management/features/transaction/presentation/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../config/localization/app_localizations.dart';
-import '../../../auth/presentation/provider/auth_provider.dart';
+import '../../../../../config/localization/app_localizations.dart';
+import '../../../../auth/presentation/provider/auth_provider.dart';
 
 class CustomSliverAppBar extends StatefulWidget {
   const CustomSliverAppBar({super.key});

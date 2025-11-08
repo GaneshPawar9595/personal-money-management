@@ -136,34 +136,45 @@ lib/
 │   │   │   ├── entities/
 │   │   │   │   ├── category_summary_entity.dart
 │   │   │   │   └── spending_trend_entity.dart
-│   │   │   ├── usecases/
-│   │   │   │   ├── calculate_category_summary_usecase.dart
-│   │   │   │   ├── calculate_spending_trends_usecase.dart
-│   │   │   │   └── get_recent_transactions_usecase.dart
-│   │   │   └── repositories/
+│   │   │   ├── repositories/
+│   │   │   └── usecases/
+│   │   │       ├── calculate_category_summary_usecase.dart
+│   │   │       ├── calculate_spending_trends_usecase.dart
+│   │   │       └── get_recent_transactions_usecase.dart
 │   │   └── presentation/
 │   │       ├── pages/
-│   │       │   ├── dashboard_page.dart
+│   │       │   ├── dashboard_desktop.dart
 │   │       │   ├── dashboard_mobile.dart
-│   │       │   └── dashboard_desktop.dart
+│   │       │   ├── dashboard_page.dart
+│   │       │   └── desktop_home_screen.dart
 │   │       ├── provider/
 │   │       │   └── dashboard_provider.dart
+│   │       ├── sections/
+│   │       │   ├── recent_transactions/
+│   │       │   │   ├── desktop_recent_transactions_section.dart
+│   │       │   │   ├── desktop_transaction_item.dart
+│   │       │   │   └── recent_transactions_section.dart
+│   │       │   ├── spending_trends/
+│   │       │   │   ├── desktop_spending_chart_section.dart
+│   │       │   │   └── spending_trends_section.dart
+│   │       │   ├── stats_cards/
+│   │       │   │   └── desktop_stats_cards_section.dart
+│   │       │   ├── top_bar/
+│   │       │   │   ├── custom_sliver_appbar.dart
+│   │       │   │   └── desktop_top_bar.dart
+│   │       │   ├── top_merchants/
+│   │       │   │   ├── desktop_top_merchants_section.dart
+│   │       │   │   └── top_merchants_section.dart
+│   │       │   ├── top_spend_category/
+│   │       │   │   ├── desktop_category_breakdown_section.dart
+│   │       │   │   └── top_spend_category_section.dart
 │   │       └── widgets/
 │   │           ├── desktop/
-│   │           │   ├── desktop_home_screen.dart
-│   │           │   ├── desktop_category_breakdown_section.dart
-│   │           │   ├── desktop_recent_transactions_section.dart
-│   │           │   ├── desktop_spending_chart_section.dart
-│   │           │   ├── desktop_stats_card.dart
-│   │           │   ├── desktop_top_merchants_section.dart
-│   │           │   └── desktop_transaction_item.dart
-│   │           ├── custom_sliver_appbar.dart
+│   │           │   └── stats_cards/
+│   │           │       └── desktop_stats_card.dart
 │   │           ├── section_header.dart
-│   │           ├── spending_trends_section.dart
 │   │           ├── summary_cards.dart
-│   │           ├── time_range_selector.dart
-│   │           ├── top_merchants_section.dart
-│   │           └── top_spend_category_section.dart
+│   │           └── time_range_selector.dart
 │
 │   ├── profile/                                                   # User profile management
 │   │   ├── data/

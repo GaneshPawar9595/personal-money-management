@@ -19,6 +19,7 @@
   "signup_button": "साइन अप",
   "already_account": "पहले से खाता है? लॉगिन करें",
   "heading_total_balance": "कुल शेष राशि",
+
   "ERR_nameRequired": "नाम आवश्यक है",
   "ERR_nameInvalid": "कृपया मान्य नाम दर्ज करें",
   "ERR_phoneRequired": "फ़ोन नंबर आवश्यक है",
@@ -26,12 +27,14 @@
   "ERR_emailRequired": "ईमेल आवश्यक है",
   "ERR_invalidEmail": "ईमेल पता मान्य नहीं है। कृपया जांचें और पुनः प्रयास करें।",
   "ERR_passwordTooShort": "पासवर्ड कम से कम 6 वर्णों का होना चाहिए",
+
   "security": "सुरक्षा",
   "preferences": "प्राथमिकताएँ",
   "personal_info": "व्यक्तिगत जानकारी",
   "save": "सहेजें",
   "edit": "संपादित करें",
   "categories_title": "श्रेणियाँ",
+
   "delete_category_title": "श्रेणी हटाएं",
   "delete_category_message": "\"{0}\" को हटाना चाहते हैं?",
   "cancel_button": "रद्द करें",
@@ -41,7 +44,6 @@
   "category_deleted_success": "श्रेणी सफलतापूर्वक हटाई गई",
   "no_categories_found": "कोई श्रेणियाँ नहीं मिलीं।",
   "add_category_tooltip": "श्रेणी जोड़ें",
-
   "add_categories_title": "श्रेणी जोड़ें",
   "edit_category_title": "श्रेणी संपादित करें",
   "select_icon": "आइकन चुनें",
@@ -85,7 +87,65 @@
   "yesterday": "कल",
   "search_note_or_category": "नोट या श्रेणी अनुसार खोजें",
   "all": "सभी",
-
   "date": "तारीख",
-  "select_date": "तारीख चुनें"
+  "select_date": "तारीख चुनें",
+
+  "delete_dialog_title": "लेन-देन हटाएँ",
+  "delete_dialog_body": "क्या आप वास्तव में '{note}' को हटाना चाहते हैं?",
+  "delete_dialog_confirm": "हटाएँ",
+  "delete_dialog_cancel": "रद्द करें",
+  "transaction_delete_failed": "लेन-देन हटाने में विफल",
+  "transaction_deleted_success": "लेन-देन सफलतापूर्वक हटाया गया",
+  "transaction_delete_error": "लेन-देन हटाने में त्रुटि",
+
+  "recent_transactions": "हाल की लेन-देन",
+  "top_merchants": "शीर्ष व्यापारी",
+  "top_spends_category": "शीर्ष व्यय श्रेणी",
+  "top_spends": "शीर्ष व्यय",
+  "no_transactions_yet": "अभी तक कोई लेन-देन नहीं",
+  "tap_plus_to_add_first_transaction": "+ दबाकर अपनी पहली लेन-देन जोड़ें",
+  "please_sign_in": "कृपया साइन इन करें",
+  "dashboard_overview": "डैशबोर्ड अवलोकन",
+  "transactions_history": "लेन-देन इतिहास",
+  "manage_categories": "श्रेणियाँ प्रबंधित करें",
+  "profile": "प्रोफाइल",
+  "redirecting_to_splash_screen": "स्प्लैश स्क्रीन पर भेजा जा रहा है...",
+  "recent_transactions_title": "हाल की लेन-देन",
+  "view_all": "सभी देखें",
+  "dashboard_title": "डैशबोर्ड",
+  "user": "उपयोगकर्ता",
+  "role_admin": "प्रशासक",
+  "user_initial": "उ",
+
+  "spending_trends_title": "व्यय प्रवृत्तियाँ",
+  "no_spend_trends_available": "कोई व्यय प्रवृत्तियाँ उपलब्ध नहीं हैं।",
+  "spending_increased_msg": "व्यय बढ़ गया है, कृपया सावधानीपूर्वक बजट बनाएं!",
+  "spending_decreased_msg": "व्यय कम हुआ है, अच्छी अनुशासन!",
+  "weekly": "साप्ताहिक",
+  "monthly": "मासिक",
+  "yearly": "वार्षिक",
+
+  "no_spend_data_available": "कोई व्यय डेटा उपलब्ध नहीं है",
+  "this_week": "इस सप्ताह",
+  "this_month": "इस माह",
+  "this_year": "इस वर्ष",
+  "category_transaction_count": "{0} लेन-देन",
+
+  "no_spending_data_available": "कोई खर्च डेटा उपलब्ध नहीं है",
+  "delete": "हटाएँ",
+  "net": "शुद्ध",
+
+  "total_balance": "कुल शेष राशि",
+  "total_income": "कुल आय",
+  "total_expenses": "कुल व्यय",
+  "total_transactions": "कुल लेन-देन",
+  "categories": "श्रेणियाँ",
+  "transactions": "लेन-देन",
+  "today_positive": "आज: +₹{amount}",
+  "today_negative": "आज: -₹{amount}",
+  "today_none": "आज कोई लेन-देन नहीं",
+
+  "top_merchants_title": "शीर्ष खर्च श्रेणियाँ",
+  "category_breakdown_title": "श्रेणी विभाजन"
+
 }

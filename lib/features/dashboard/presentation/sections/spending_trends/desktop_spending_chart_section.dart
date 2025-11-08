@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../../../../config/localization/app_localizations.dart';
 import '../../provider/dashboard_provider.dart';
-import '../spending_trends_section.dart';
+import 'spending_trends_section.dart';
 
 /// Desktop spending chart with header and quick action
 class DesktopSpendingChartSection extends StatelessWidget {
@@ -15,6 +16,7 @@ class DesktopSpendingChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -32,7 +34,7 @@ class DesktopSpendingChartSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Spending Trends',
+                  loc.translate('spending_trends_title'),
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

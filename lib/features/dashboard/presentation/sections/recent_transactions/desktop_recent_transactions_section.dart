@@ -3,23 +3,31 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../transaction/domain/entities/transaction_entity.dart';
 import '../../provider/dashboard_provider.dart';
+import 'package:money_management/config/localization/app_localizations.dart';
+
 import 'desktop_transaction_item.dart';
 
-/// Desktop recent transactions with compact list
 class DesktopRecentTransactionsSection extends StatelessWidget {
   final Function(TransactionEntity) onEdit;
   final Function(TransactionEntity) onDelete;
   final VoidCallback onViewAll;
+  final String? title;
+  final String? emptyText;
+  final bool showViewAll;
 
   const DesktopRecentTransactionsSection({
     super.key,
     required this.onEdit,
     required this.onDelete,
     required this.onViewAll,
+    this.title,
+    this.emptyText,
+    this.showViewAll = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -37,29 +45,26 @@ class DesktopRecentTransactionsSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Recent Transactions',
+                  title ?? loc.translate('recent_transactions_title'),
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const Spacer(),
-               /* TextButton.icon(
-                  onPressed: onViewAll,
-                  icon: const Icon(Icons.arrow_forward, size: 16),
-                  label: const Text('View All'),
-                ),*/
+                /*if (showViewAll)
+                  TextButton.icon(
+                    onPressed: onViewAll,
+                    icon: const Icon(Icons.arrow_forward, size: 16),
+                    label: Text(loc.translate('view_all')),
+                  ),*/
               ],
             ),
           ),
-
           const Divider(height: 1),
-
-          // Transactions List
           Consumer<DashboardProvider>(
             builder: (context, dashboardProvider, child) {
-              final recentTransactions =
-              dashboardProvider.getRecentTransactions(limit: 10);
+              final recentTransactions = dashboardProvider.getRecentTransactions(limit: 10);
 
               if (recentTransactions.isEmpty) {
                 return Padding(
@@ -74,7 +79,7 @@ class DesktopRecentTransactionsSection extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No transactions yet',
+                          emptyText ?? loc.translate('no_transactions_yet'),
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../config/localization/app_localizations.dart';
 import '../../../auth/presentation/provider/auth_provider.dart';
 import '../../../category/presentation/pages/category_desktop_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../transaction/presentation/pages/transaction_page.dart';
-import '../widgets/desktop/desktop_home_screen.dart';
+import 'desktop_home_screen.dart';
 
 class DashboardDesktop extends StatefulWidget {
   const DashboardDesktop({super.key});
@@ -19,6 +20,8 @@ class _DashboardDesktopState extends State<DashboardDesktop> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     // Watch for loading/auth state so UI updates on sign-in/out
     final authProvider = context.watch<AuthProvider>();
     final isLoggedIn = authProvider.isLoggedIn;
@@ -36,8 +39,8 @@ class _DashboardDesktopState extends State<DashboardDesktop> {
         final currentLoc = GoRouterState.of(context).uri.toString();
         if (currentLoc != '/signin') context.go('/signin');
       });
-      return const Scaffold(
-        body: Center(child: Text('Redirecting to sign in...')),
+      return Scaffold(
+        body: Center(child: Text(loc.translate('redirecting_to_splash_screen'))),
       );
     }
 
@@ -65,31 +68,32 @@ class _DashboardDesktopState extends State<DashboardDesktop> {
                 _selectedIndex = index; // Change the main view when a new menu item is picked. [web:101][web:104]
               });
             },
-            destinations: const [
+            destinations: [
               NavigationRailDestination(
                 icon: Tooltip(
-                  message: 'Dashboard Overview',
+                  message: loc.translate('dashboard_overview'),
                   child: Icon(Icons.dashboard),
                 ),
-                label: Text('Dashboard Overview'),
+                label: Text(loc.translate('dashboard_overview')),
               ),
               NavigationRailDestination(
                 icon: Tooltip(
-                  message: 'Transactions history',
+                  message: loc.translate('transactions_history'),
                   child: Icon(Icons.history),
                 ),
-                label: Text('Transactions history'),
+                label: Text(loc.translate('transactions_history')),
               ),
               NavigationRailDestination(
                 icon: Tooltip(
-                  message: 'Manage categories',
+                  message: loc.translate('manage_categories'),
                   child: Icon(Icons.category),
                 ),
-                label: Text('Manage categories'),
+                label: Text(loc.translate('manage_categories')),
               ),
               NavigationRailDestination(
-                icon: Tooltip(message: 'Profile', child: Icon(Icons.person)),
-                label: Text('Profile'),
+                icon: Tooltip(message: loc.translate('profile'),
+                    child: Icon(Icons.person)),
+                label: Text(loc.translate('profile')),
               ),
             ],
           ),
